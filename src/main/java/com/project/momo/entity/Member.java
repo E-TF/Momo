@@ -31,13 +31,12 @@ public class Member extends BaseEntity{
 
     private int points;
 
-    @Column(name = "image_url_id")
-    private Long imageUrlId;
+    @OneToOne
+    @JoinColumn(name = "image_url_id")
+    private ImageUrl imageUrl;
 
     @Column(name = "payment_cnt", columnDefinition = "TINYINT")
     private int paymentCnt;
 
-    @OneToMany(mappedBy = "member")
-    private List<Payment> payments = new ArrayList<>();
 
 }

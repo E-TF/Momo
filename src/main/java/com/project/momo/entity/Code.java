@@ -16,4 +16,5 @@ public class Code {
 
     @Column(length = 20)
     private String name;
+
 }
