@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
-public class TransferPoints {
+public class TransferPoints extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +24,4 @@ public class TransferPoints {
     @Column(name = "transfer_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime transferAt;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 }

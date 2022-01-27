@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Table(name = "PAYMENT")
-public class Payment {
+public class Payment extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,12 +25,6 @@ public class Payment {
     private LocalDate validityPeriod;
 
     private String password;
-
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

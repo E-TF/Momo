@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "MEMBER")
-public class Member {
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,9 +40,4 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Payment> payments = new ArrayList<>();
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "CHARGE_POINTS")
-public class ChargePoints {
+public class ChargePoints extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,9 +23,5 @@ public class ChargePoints {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
 
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 }

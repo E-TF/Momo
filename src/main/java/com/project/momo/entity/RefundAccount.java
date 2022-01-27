@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "REFUND_ACCOUNT")
-public class RefundAccount {
+public class RefundAccount extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +24,4 @@ public class RefundAccount {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 }
