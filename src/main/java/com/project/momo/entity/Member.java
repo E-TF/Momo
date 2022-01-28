@@ -16,7 +16,7 @@ public class Member extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "login_id", length = 45)
+    @Column(name = "login_id", length = 20)
     private String loginId;
 
     private String password;
@@ -31,7 +31,7 @@ public class Member extends BaseEntity{
 
     private int points;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_url_id")
     private ImageUrl imageUrl;
 
