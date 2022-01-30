@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "DISTRICT")
-public class District extends BaseEntity {
+public class District {
 
     @Id
     private Long id;

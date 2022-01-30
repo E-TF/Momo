@@ -13,9 +13,6 @@ public class AdjustPoint extends BaseEntity {
 
     private int amount;
 
-    @Column(name = "adjust_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime adjustAt;
-
     @ManyToOne
     @JoinColumn(name = "memebr_id")
     private Member member;

@@ -14,9 +14,6 @@ public class PayClubFee extends BaseEntity {
 
     private int amount;
 
-    @Column(name = "pay_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime payAt;
-
     @Column(name = "pay_date", columnDefinition = "DATE")
     private LocalDate payDate;
 

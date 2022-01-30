@@ -25,7 +25,7 @@ public class Gathering extends BaseEntity {
     private String location;
 
     @Column(name = "max_number", columnDefinition = "SMALLINT")
-    private int max_number;
+    private int maxNumber;
 
     @Column(name = "participation_fee", columnDefinition = "MEDIUMINT")
     private int participationFee;

@@ -21,7 +21,4 @@ public class TransferPoints extends BaseEntity {
 
     private int amount;
 
-    @Column(name = "transfer_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime transferAt;
-
 }

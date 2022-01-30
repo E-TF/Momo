@@ -13,9 +13,6 @@ public class Chat extends BaseEntity {
 
     private String content;
 
-    @Column(name = "written_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime writtenAt;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

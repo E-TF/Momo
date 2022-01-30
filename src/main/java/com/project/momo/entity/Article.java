@@ -21,9 +21,6 @@ public class Article extends BaseEntity {
     @JoinColumn(name = "code_key")
     private Code code;
 
-    @Column(name = "written_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime writtenAt;
-
     @Column(name = "view_cnt")
     private long viewCnt;
 

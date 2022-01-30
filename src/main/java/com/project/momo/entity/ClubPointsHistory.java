@@ -20,9 +20,6 @@ public class ClubPointsHistory extends BaseEntity {
 
     private int amount;
 
-    @Column(name = "changed_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime changedAt;
-
     @Column(name = "points_before")
     private int pointsBefore;
 

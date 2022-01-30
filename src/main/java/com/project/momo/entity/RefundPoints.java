@@ -11,9 +11,6 @@ public class RefundPoints extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "refund_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime refundAt;
-
     private int amount;
 
     @ManyToOne

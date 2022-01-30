@@ -13,9 +13,6 @@ public class ChargePoints extends BaseEntity {
 
     private int amount;
 
-    @Column(name = "charge_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime chargeAt;
-
     @Column(name = "card_approval_number", length = 45)
     private String cardApprovalNumber;
 
