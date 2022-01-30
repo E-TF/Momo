@@ -12,7 +12,7 @@ public class Code {
 
     @ManyToOne
     @JoinColumn(name = "group_key")
-    private CodeGroup groupKey;
+    private CodeGroup codeGroup;
 
     @Column(length = 20)
     private String name;

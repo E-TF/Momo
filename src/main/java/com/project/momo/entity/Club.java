@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "CLUB")
-public class Club extends BaseEntity{
+public class Club extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

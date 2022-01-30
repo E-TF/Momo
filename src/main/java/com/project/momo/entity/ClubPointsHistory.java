@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "CLUB_POINTS_HISTORY")
-public class ClubPointsHistory extends BaseEntity{
+public class ClubPointsHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
-public class TransferPoints extends BaseEntity{
+public class TransferPoints extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

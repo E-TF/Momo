@@ -4,12 +4,11 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Table(name = "PAYMENT")
-public class Payment extends BaseEntity{
+public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

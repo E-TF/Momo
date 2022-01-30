@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PAY_CLUB_FEE")
-public class PayClubFee extends BaseEntity{
+public class PayClubFee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

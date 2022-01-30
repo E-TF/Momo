@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ADJUST_POINTS")
-public class AdjustPoint extends BaseEntity{
+public class AdjustPoint extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "UNPAY_CLUB_FEE")
-public class UnpayClubFee extends BaseEntity{
+public class UnpayClubFee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +14,7 @@ public class UnpayClubFee extends BaseEntity{
     @Column(name = "unpay_date", columnDefinition = "DATE")
     private LocalDate unpayDate;
 
-    @Column(name = "has_paid", columnDefinition = "TINYINT(1)")
+    @Column(name = "has_paid", nullable = false)
     private boolean hasPaid;
 
     @ManyToOne

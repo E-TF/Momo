@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "BANNED_MEMBER")
-public class BannedMember extends BaseEntity{
+public class BannedMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

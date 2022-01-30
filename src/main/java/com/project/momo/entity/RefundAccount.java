@@ -1,11 +1,10 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "REFUND_ACCOUNT")
-public class RefundAccount extends BaseEntity{
+public class RefundAccount extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
