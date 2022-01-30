@@ -1,16 +1,19 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ADJUST_POINTS")
 public class AdjustPoint extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
+    @Min(1)
+    @NotNull
     private int amount;
 
     @ManyToOne

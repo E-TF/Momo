@@ -1,20 +1,27 @@
 package com.project.momo.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PAY_CLUB_FEE")
+@DynamicInsert
 public class PayClubFee extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
+    @Min(1)
+    @NotNull
     private int amount;
 
-    @Column(name = "pay_date", columnDefinition = "DATE")
+    @Column(name = "pay_date")
+    @NotNull
     private LocalDate payDate;
 
     @ManyToOne
@@ -24,6 +31,5 @@ public class PayClubFee extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
-
 
 }

@@ -3,29 +3,42 @@ package com.project.momo.entity;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 @Entity
-@Getter
 @Table(name = "MEMBER")
+@Getter
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @Column(name = "login_id", length = 45)
+    @Size(min = 3, max = 45)
+    @NotBlank
     private String loginId;
 
+    @Size(max = 255)
+    @NotNull
     private String password;
 
     @Column(length = 45)
+    @Size(max = 45)
+    @NotBlank
     private String name;
 
+    @Size(max = 255)
+    @Email
+    @NotBlank
     private String email;
 
     @Column(name = "phone_number", length = 20)
+    @Size(max = 20)
+    @NotBlank
     private String phoneNumber;
 
+    @Min(0)
     private int points;
 
     @OneToOne
@@ -33,6 +46,8 @@ public class Member extends BaseEntity {
     private ImageUrl imageUrl;
 
     @Column(name = "payment_cnt", columnDefinition = "TINYINT")
+    @Min(0)
+    @Max(3)
     private int paymentCnt;
 
 

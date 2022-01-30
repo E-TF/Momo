@@ -1,32 +1,45 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "MEMBER_POINTS_HISTORY")
 public class MemberPointsHistory extends BaseEntity {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member member;
 
     @ManyToOne
     @JoinColumn(name = "code_key")
+    @NotNull
     private Code code;
 
     @Column(length = 45)
+    @Size(max = 45)
+    @NotBlank
     private String description;
 
+    @NotNull
     private int amount;
 
     @Column(name = "points_before")
+    @Min(0)
+    @NotNull
     private int pointsBefore;
 
     @Column(name = "points_after")
+    @Min(0)
+    @NotNull
     private int pointsAfter;
 
 }

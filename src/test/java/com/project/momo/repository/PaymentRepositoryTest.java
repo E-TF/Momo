@@ -15,7 +15,6 @@ class PaymentRepositoryTest {
 
     @Test
     @Transactional
-    @Rollback(false)
     void 결제수단저장() {
         Payment payment1 = new Payment();
         Payment payment2 = new Payment();

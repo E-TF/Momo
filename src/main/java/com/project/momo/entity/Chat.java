@@ -1,16 +1,20 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CHAT")
 public class Chat extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
+    @Size(max = 255)
+    @NotBlank
     private String content;
 
     @ManyToOne
@@ -19,6 +23,7 @@ public class Chat extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "club_id")
+    @NotNull
     private Club club;
 
 }

@@ -1,13 +1,14 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "RECOMMEND")
 public class Recommend extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -16,5 +17,6 @@ public class Recommend extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "article_id")
+    @NotNull
     private Article article;
 }

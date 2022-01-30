@@ -1,14 +1,15 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
 public class TransferPoints extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -19,6 +20,8 @@ public class TransferPoints extends BaseEntity {
     @JoinColumn(name = "receiving_member_id")
     private Member receiveMember;
 
+    @NotNull
+    @Min(1)
     private int amount;
 
 }

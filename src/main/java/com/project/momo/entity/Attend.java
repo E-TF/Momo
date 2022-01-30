@@ -1,13 +1,14 @@
 package com.project.momo.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ATTEND")
 public class Attend extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -16,6 +17,7 @@ public class Attend extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "gathering_id")
+    @NotNull
     private Gathering gathering;
 
 }
