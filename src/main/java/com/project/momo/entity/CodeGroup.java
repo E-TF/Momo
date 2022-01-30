@@ -15,7 +15,7 @@ public class CodeGroup {
     @Column(length = 20)
     private String name;
 
-    @OneToMany(mappedBy = "groupKey")
+    @OneToMany(mappedBy = "codeGroup")
     private List<Code> codes = new ArrayList<>();
 
 }
