@@ -3,7 +3,6 @@ package com.project.momo.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "PAYMENT")
 @Getter
-@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
 

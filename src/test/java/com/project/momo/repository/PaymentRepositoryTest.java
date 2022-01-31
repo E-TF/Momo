@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -27,11 +26,11 @@ class PaymentRepositoryTest {
         //given
         Member member = Member.createMember("loginId", "password",
                 "test", "test@test.com", "00000000000", null);
+        memberRepository.save(member);
         Payment payment = Payment.createPayment("테스트은행",
                 "111111-11-111111", LocalDate.now(), "password", member);
 
         //when
-        memberRepository.save(member);
         paymentRepository.save(payment);
 
         //then
