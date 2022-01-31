@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -8,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "VOTE")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote extends BaseEntity {
 
     @Id

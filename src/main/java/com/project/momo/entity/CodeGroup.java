@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +13,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CODE_GROUP")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CodeGroup {
 
     @Id

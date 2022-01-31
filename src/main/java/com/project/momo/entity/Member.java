@@ -1,6 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -8,6 +10,7 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "MEMBER")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     @Id

@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -9,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "GATHERING")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Gathering extends BaseEntity {
 
     @Id

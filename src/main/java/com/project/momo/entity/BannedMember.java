@@ -1,10 +1,14 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "BANNED_MEMBER")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BannedMember extends BaseEntity {
 
     @Id

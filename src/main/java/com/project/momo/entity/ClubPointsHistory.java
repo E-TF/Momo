@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +11,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CLUB_POINTS_HISTORY")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubPointsHistory extends BaseEntity {
 
     @Id

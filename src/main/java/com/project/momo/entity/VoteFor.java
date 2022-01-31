@@ -1,10 +1,14 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "VOTE_FOR")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoteFor extends BaseEntity {
 
     @Id

@@ -1,6 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "PAYMENT")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
 
     @Id

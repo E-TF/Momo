@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -7,6 +10,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "VOTE_OPTION")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoteOption extends BaseEntity {
 
     @Id

@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +11,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CHARGE_POINTS")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargePoints extends BaseEntity {
 
     @Id

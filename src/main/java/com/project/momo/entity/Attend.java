@@ -1,10 +1,14 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ATTEND")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Attend extends BaseEntity {
 
     @Id

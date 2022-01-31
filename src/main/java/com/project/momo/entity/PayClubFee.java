@@ -1,6 +1,7 @@
 package com.project.momo.entity;
 
-import org.hibernate.annotations.DynamicInsert;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "PAY_CLUB_FEE")
-@DynamicInsert
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayClubFee extends BaseEntity {
 
     @Id

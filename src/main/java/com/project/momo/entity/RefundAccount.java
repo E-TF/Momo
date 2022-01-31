@@ -1,5 +1,8 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -7,6 +10,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "REFUND_ACCOUNT")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefundAccount extends BaseEntity {
 
     @Id

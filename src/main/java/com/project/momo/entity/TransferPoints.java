@@ -1,11 +1,15 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransferPoints extends BaseEntity {
 
     @Id

@@ -1,11 +1,15 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "UNPAY_CLUB_FEE")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UnpayClubFee extends BaseEntity {
 
     @Id
