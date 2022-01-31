@@ -23,7 +23,7 @@ public class Article extends BaseEntity {
     @NotBlank
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code_key")
     @NotNull
     private Code code;
@@ -32,12 +32,12 @@ public class Article extends BaseEntity {
     @Min(0)
     private long viewCnt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @NotNull
     private Club club;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 }

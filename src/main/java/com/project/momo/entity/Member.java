@@ -41,7 +41,7 @@ public class Member extends BaseEntity {
     @Min(0)
     private int points;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_url_id")
     private ImageUrl imageUrl;
 

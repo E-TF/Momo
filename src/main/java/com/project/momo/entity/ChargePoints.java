@@ -23,7 +23,7 @@ public class ChargePoints extends BaseEntity {
     @NotBlank
     private String cardApprovalNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

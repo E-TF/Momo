@@ -28,7 +28,7 @@ public class RefundAccount extends BaseEntity {
     @NotBlank
     private String holder;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull
     private Member member;

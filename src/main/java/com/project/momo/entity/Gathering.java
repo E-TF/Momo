@@ -20,7 +20,7 @@ public class Gathering extends BaseEntity {
     @NotBlank
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code_key")
     @NotNull
     private Code code;
@@ -43,7 +43,7 @@ public class Gathering extends BaseEntity {
     @NotNull
     private int participationFee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @NotNull
     private Club club;

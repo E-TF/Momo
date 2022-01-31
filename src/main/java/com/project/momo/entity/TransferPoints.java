@@ -12,11 +12,11 @@ public class TransferPoints extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sending_member_id")
     private Member sendMember;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiving_member_id")
     private Member receiveMember;
 

@@ -14,7 +14,7 @@ public class ClubPointsHistory extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code_key")
     @NotNull
     private Code code;
@@ -37,7 +37,7 @@ public class ClubPointsHistory extends BaseEntity {
     @NotNull
     private int pointsAfter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @NotNull
     private Club club;

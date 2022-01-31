@@ -15,7 +15,7 @@ public class Code {
     @NotBlank
     private String codeKey;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_key")
     @NotNull
     private CodeGroup codeGroup;

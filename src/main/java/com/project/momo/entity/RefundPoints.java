@@ -16,7 +16,7 @@ public class RefundPoints extends BaseEntity {
     @NotNull
     private int amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

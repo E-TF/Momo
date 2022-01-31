@@ -19,12 +19,12 @@ public class UnpayClubFee extends BaseEntity {
     @Column(name = "has_paid")
     private boolean hasPaid;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @NotNull
     private Club club;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull
     private Member member;

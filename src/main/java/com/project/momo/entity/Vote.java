@@ -27,7 +27,7 @@ public class Vote extends BaseEntity {
     @NotNull
     private LocalDateTime finishAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @NotNull
     private Club club;

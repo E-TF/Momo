@@ -21,7 +21,7 @@ public class Club extends BaseEntity {
     @NotBlank
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code_key")
     @NotNull
     private Code code;
@@ -35,7 +35,7 @@ public class Club extends BaseEntity {
     @NotNull
     private int payDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_url_id")
     private ImageUrl imageUrl;
 
@@ -44,11 +44,9 @@ public class Club extends BaseEntity {
     @NotNull
     private int clubFee;
 
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     @NotNull
     private District district;
-
 
 }
