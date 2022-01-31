@@ -3,6 +3,7 @@ package com.project.momo.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -10,6 +11,7 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "MEMBER")
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
@@ -53,5 +55,15 @@ public class Member extends BaseEntity {
     @Max(3)
     private int paymentCnt;
 
-
+    public static Member createMember(String loginId, String password, String name, String email, String phoneNumber, ImageUrl imageUrl) {
+        Member member = new Member();
+        member.loginId = loginId;
+        member.password = password;
+        member.name = name;
+        member.email = email;
+        member.phoneNumber = phoneNumber;
+        member.imageUrl = imageUrl;
+        member.createdBy = "SYSTEM";
+        return member;
+    }
 }

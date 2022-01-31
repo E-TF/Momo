@@ -3,6 +3,7 @@ package com.project.momo.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "PAYMENT")
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
 
@@ -42,4 +44,16 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "member_id")
     @NotNull
     private Member member;
+
+    public static Payment createPayment(String companyName, String cardNumber, LocalDate validityPeriod, String password, Member member) {
+        Payment payment = new Payment();
+        payment.companyName = companyName;
+        payment.cardNumber = cardNumber;
+        payment.validityPeriod = validityPeriod;
+        payment.password = password;
+        payment.member = member;
+        payment.createdBy = "MEMBER" + member.getId();
+
+        return payment;
+    }
 }
