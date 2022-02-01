@@ -40,11 +40,9 @@ public class Gathering extends BaseEntity {
 
     @Column(name = "max_number", columnDefinition = "SMALLINT")
     @Min(2)
-    @NotNull
     private int maxNumber;
 
     @Column(name = "participation_fee", columnDefinition = "MEDIUMINT")
-    @NotNull
     private int participationFee;
 
     @ManyToOne(fetch = FetchType.LAZY)

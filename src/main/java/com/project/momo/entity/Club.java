@@ -15,7 +15,7 @@ public class Club extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 45)
+    @Column(length = 45, unique = true)
     @Size(max = 45)
     @NotBlank
     private String name;
@@ -36,7 +36,6 @@ public class Club extends BaseEntity {
     @Column(name = "pay_date", columnDefinition = "TINYINT")
     @Min(1)
     @Max(31)
-    @NotNull
     private int payDate;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -45,7 +44,6 @@ public class Club extends BaseEntity {
 
     @Column(name = "club_fee")
     @Min(0)
-    @NotNull
     private int clubFee;
 
     @ManyToOne(fetch = FetchType.LAZY)

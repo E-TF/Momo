@@ -19,7 +19,6 @@ public class ChargePoints extends BaseEntity {
     private Long id;
 
     @Min(1000)
-    @NotNull
     private int amount;
 
     @Column(name = "card_approval_number", length = 45)

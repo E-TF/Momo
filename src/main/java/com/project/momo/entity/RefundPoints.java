@@ -17,7 +17,6 @@ public class RefundPoints extends BaseEntity {
     private Long id;
 
     @Min(1000)
-    @NotNull
     private int amount;
 
     @ManyToOne(fetch = FetchType.LAZY)

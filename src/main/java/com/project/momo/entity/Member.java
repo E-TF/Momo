@@ -17,7 +17,7 @@ public class Member extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "login_id", length = 45)
+    @Column(name = "login_id", length = 45, unique = true)
     @Size(min = 3, max = 45)
     @NotBlank
     private String loginId;

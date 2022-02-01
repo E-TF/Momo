@@ -24,7 +24,6 @@ public class TransferPoints extends BaseEntity {
     @JoinColumn(name = "receiving_member_id")
     private Member receiveMember;
 
-    @NotNull
     @Min(1)
     private int amount;
 

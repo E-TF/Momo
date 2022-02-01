@@ -17,7 +17,6 @@ public class AdjustPoint extends BaseEntity {
     private Long id;
 
     @Min(1)
-    @NotNull
     private int amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
