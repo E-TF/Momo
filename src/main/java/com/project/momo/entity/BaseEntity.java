@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class BaseEntity {
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20, updatable = false)
-    @Size(max = 20)
+    @Column(name = "created_by", length = 45, updatable = false)
+    @Size(max = 45)
     @NotBlank
     protected String createdBy;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 
 }

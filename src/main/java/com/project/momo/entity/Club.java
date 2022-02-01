@@ -31,7 +31,7 @@ public class Club extends BaseEntity {
     private Code code;
 
     @Min(0)
-    private int points;
+    private long points;
 
     @Column(name = "pay_date", columnDefinition = "TINYINT")
     @Min(1)
@@ -44,7 +44,7 @@ public class Club extends BaseEntity {
 
     @Column(name = "club_fee")
     @Min(0)
-    private int clubFee;
+    private long clubFee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ADJUST_POINTS")
@@ -17,7 +16,7 @@ public class AdjustPoint extends BaseEntity {
     private Long id;
 
     @Min(1)
-    private int amount;
+    private long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memebr_id")

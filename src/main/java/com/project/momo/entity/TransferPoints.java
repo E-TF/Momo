@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
@@ -25,6 +24,6 @@ public class TransferPoints extends BaseEntity {
     private Member receiveMember;
 
     @Min(1)
-    private int amount;
+    private long amount;
 
 }

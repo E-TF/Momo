@@ -42,7 +42,7 @@ public class Member extends BaseEntity {
     private String phoneNumber;
 
     @Min(0)
-    private int points;
+    private long points;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_url_id")

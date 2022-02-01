@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -19,7 +18,7 @@ public class ChargePoints extends BaseEntity {
     private Long id;
 
     @Min(1000)
-    private int amount;
+    private long amount;
 
     @Column(name = "card_approval_number", length = 45)
     @Size(max = 45)

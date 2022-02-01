@@ -17,7 +17,7 @@ public class Chat extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Size(max = 255)
+    @Size(max = 1000)
     @NotBlank
     private String content;
 

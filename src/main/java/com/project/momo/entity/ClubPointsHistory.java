@@ -28,15 +28,15 @@ public class ClubPointsHistory extends BaseEntity {
     @NotBlank
     private String description;
 
-    private int amount;
+    private long amount;
 
     @Column(name = "points_before")
     @Min(0)
-    private int pointsBefore;
+    private long pointsBefore;
 
     @Column(name = "points_after")
     @Min(0)
-    private int pointsAfter;
+    private long pointsAfter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")

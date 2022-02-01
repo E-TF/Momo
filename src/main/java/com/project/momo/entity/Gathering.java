@@ -43,7 +43,7 @@ public class Gathering extends BaseEntity {
     private int maxNumber;
 
     @Column(name = "participation_fee", columnDefinition = "MEDIUMINT")
-    private int participationFee;
+    private long participationFee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")

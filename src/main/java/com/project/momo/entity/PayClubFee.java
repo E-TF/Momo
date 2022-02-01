@@ -18,7 +18,7 @@ public class PayClubFee extends BaseEntity {
     private Long id;
 
     @Min(1)
-    private int amount;
+    private long amount;
 
     @Column(name = "pay_date")
     @NotNull
