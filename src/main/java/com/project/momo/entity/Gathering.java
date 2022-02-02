@@ -24,10 +24,10 @@ public class Gathering extends BaseEntity {
     @NotBlank
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code_key")
-    @NotNull
-    private Code code;
+    @Column(length = 20)
+    @Size(max = 20)
+    @NotBlank
+    private String category;
 
     @Column(name = "gather_at")
     @NotNull

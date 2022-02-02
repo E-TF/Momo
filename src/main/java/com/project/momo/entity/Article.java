@@ -27,10 +27,10 @@ public class Article extends BaseEntity {
     @NotBlank
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code_key")
-    @NotNull
-    private Code code;
+    @Column(length = 20)
+    @Size(max = 20)
+    @NotBlank
+    private String category;
 
     @Column(name = "view_cnt")
     @Min(0)

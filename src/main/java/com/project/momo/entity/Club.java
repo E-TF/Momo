@@ -25,10 +25,10 @@ public class Club extends BaseEntity {
     @NotBlank
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code_key")
-    @NotNull
-    private Code code;
+    @Column(length = 45)
+    @Size(max = 45)
+    @NotBlank
+    private String category;
 
     @Min(0)
     private long points;
