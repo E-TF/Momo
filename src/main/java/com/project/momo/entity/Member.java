@@ -1,6 +1,5 @@
 package com.project.momo.entity;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,11 +9,11 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "MEMBER")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "SEQ_GENERATOR")
     private Long id;
 
     @Column(name = "login_id", length = 45, unique = true)
@@ -61,7 +60,7 @@ public class Member extends BaseEntity {
         member.email = email;
         member.phoneNumber = phoneNumber;
         member.imageUrl = imageUrl;
-        member.createdBy = "SYSTEM";
+        member.createdBy = loginId;
         return member;
     }
 }

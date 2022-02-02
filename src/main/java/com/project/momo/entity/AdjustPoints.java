@@ -9,7 +9,7 @@ import javax.validation.constraints.Min;
 @Entity
 @Table(name = "ADJUST_POINTS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdjustPoint extends BaseEntity {
+public class AdjustPoints extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -19,7 +19,7 @@ public class AdjustPoint extends BaseEntity {
     private long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memebr_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
