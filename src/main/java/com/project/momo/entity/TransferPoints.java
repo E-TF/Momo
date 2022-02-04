@@ -1,27 +1,29 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "TRANSFER_POINTS")
-public class TransferPoints extends BaseEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TransferPoints extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sending_member_id")
     private Member sendMember;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiving_member_id")
     private Member receiveMember;
 
-    private int amount;
-
-    @Column(name = "transfer_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime transferAt;
+    @Min(1)
+    private long amount;
 
 }

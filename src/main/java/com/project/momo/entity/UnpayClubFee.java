@@ -1,27 +1,35 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "UNPAY_CLUB_FEE")
-public class UnpayClubFee extends BaseEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UnpayClubFee extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
-    @Column(name = "unpay_date", columnDefinition = "DATE")
+    @Column(name = "unpay_date")
+    @NotNull
     private LocalDate unpayDate;
 
-    @Column(name = "has_paid", columnDefinition = "TINYINT(1)")
+    @Column(name = "has_paid")
     private boolean hasPaid;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
+    @NotNull
     private Club club;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member member;
 }

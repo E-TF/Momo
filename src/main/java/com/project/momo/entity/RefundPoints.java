@@ -1,22 +1,24 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "REFUND_POINTS")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefundPoints extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
-    @Column(name = "refund_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime refundAt;
+    @Min(1000)
+    private long amount;
 
-    private int amount;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

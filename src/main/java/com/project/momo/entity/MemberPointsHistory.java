@@ -1,40 +1,46 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "MEMBER_POINTS_HISTORY")
-public class MemberPointsHistory extends BaseEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class MemberPointsHistory extends BaseEntity {
 
     @Id
+    @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "code_key")
-    private Code code;
+    @Column(length = 20)
+    @Size(max = 20)
+    @NotBlank
+    private String category;
 
     @Column(length = 45)
+    @Size(max = 45)
+    @NotBlank
     private String description;
 
-    private int amount;
-
-    @Column(name = "changed_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime changedAt;
+    private long amount;
 
     @Column(name = "points_before")
-    private int pointsBefore;
+    @Min(0)
+    private long pointsBefore;
 
     @Column(name = "points_after")
-    private int pointsAfter;
+    @Min(0)
+    private long pointsAfter;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "created_by", length = 20)
-    private String createdBy;
 }

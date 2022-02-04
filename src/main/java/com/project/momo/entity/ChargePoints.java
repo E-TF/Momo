@@ -1,25 +1,31 @@
 package com.project.momo.entity;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CHARGE_POINTS")
-public class ChargePoints extends BaseEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ChargePoints extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
-    private int amount;
-
-    @Column(name = "charge_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime chargeAt;
+    @Min(1000)
+    private long amount;
 
     @Column(name = "card_approval_number", length = 45)
+    @Size(max = 45)
+    @NotBlank
     private String cardApprovalNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

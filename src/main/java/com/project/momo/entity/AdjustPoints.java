@@ -4,29 +4,26 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
 
 @Entity
-@Table(name = "COMMENT")
+@Table(name = "ADJUST_POINTS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseEntity {
+public class AdjustPoints extends BaseEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Size(max = 1000)
-    @NotBlank
-    private String content;
+    @Min(1)
+    private long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    @NotNull
-    private Article article;
+    @JoinColumn(name = "club_id")
+    private Club club;
+
 }
