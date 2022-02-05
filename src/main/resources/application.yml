@@ -1,9 +1,0 @@
-server:
-  port: 8081
-
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.37.123.27:3306/momo
-    username: admin
-    password: 111111
