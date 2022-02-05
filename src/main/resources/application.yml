@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.37.123.27:3306/momo
+    url: jdbc:mysql://momo.cnk3fpxrvqhe.ap-northeast-2.rds.amazonaws.com:3306/momo
     username: admin
-    password: 111111
+    password: 11111111
   jpa:
     hibernate:
       ddl-auto: validate
@@ -17,3 +17,4 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect

@@ -1,7 +1,9 @@
 package com.project.momo.entity;
 
+import com.project.momo.dto.signup.SignupForm;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -52,15 +54,15 @@ public class Member extends BaseEntity {
     @Max(3)
     private int paymentCnt;
 
-    public static Member createMember(String loginId, String password, String name, String email, String phoneNumber, ImageUrl imageUrl) {
+    public static Member createMember(SignupForm signupForm) {
         Member member = new Member();
-        member.loginId = loginId;
-        member.password = password;
-        member.name = name;
-        member.email = email;
-        member.phoneNumber = phoneNumber;
-        member.imageUrl = imageUrl;
-        member.createdBy = loginId;
+        member.loginId = signupForm.getLoginId();
+
+        member.password = signupForm.getPassword();
+        member.name = signupForm.getName();
+        member.email = signupForm.getEmail();
+        member.phoneNumber = signupForm.getPhoneNumber();
+        member.createdBy = signupForm.getLoginId();
         return member;
     }
 }

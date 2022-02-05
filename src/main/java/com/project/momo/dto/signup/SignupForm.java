@@ -1,4 +1,4 @@
-package com.project.momo.dto;
+package com.project.momo.dto.signup;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

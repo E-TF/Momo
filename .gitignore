@@ -38,3 +38,5 @@ out/
 
 ### Spring Properties ###
 *.yml
+application.yml
+.yml

@@ -1,5 +1,5 @@
 package com.project.momo.exception;
 
-public class ExpiredDuplicationCheckException extends RuntimeException {
+public class DuplicatedLoginIdException extends RuntimeException {
 
 }
