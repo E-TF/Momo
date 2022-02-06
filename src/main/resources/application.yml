@@ -6,7 +6,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://momo.cnk3fpxrvqhe.ap-northeast-2.rds.amazonaws.com:3306/momo
     username: admin
-    password: 11111111
   jpa:
     hibernate:
       ddl-auto: validate
