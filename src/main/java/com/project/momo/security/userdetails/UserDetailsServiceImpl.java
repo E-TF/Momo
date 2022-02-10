@@ -14,15 +14,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByLoginId(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setLoginId(member.getLoginId());
-        userDetails.setPassword(member.getPassword());
+        Member member = memberRepository.findByLoginId(username).orElse(null);
 
-        return userDetails;
+        return new UserDetailsImpl(member.getId(), member.getLoginId(), member.getPassword());
     }
 }

@@ -1,23 +1,32 @@
 package com.project.momo.security.userdetails;
 
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
+@ToString
 public class UserDetailsImpl implements UserDetails {
 
+    private Long id;
     private String loginId;
     private String password;
-    private List<GrantedAuthority> authorities = new ArrayList<>();
+
+    public UserDetailsImpl(Long id, String loginId, String password) {
+        this.id = id;
+        this.loginId = loginId;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        authorities.add(new SimpleGrantedAuthority("USER"));
-        return authorities;
+        return Collections.emptyList();
     }
 
     @Override
@@ -48,13 +57,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

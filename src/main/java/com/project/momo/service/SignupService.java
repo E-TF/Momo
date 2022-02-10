@@ -19,19 +19,16 @@ public class SignupService {
 
     @Transactional
     public Member signup(SignupForm signupForm) {
-        if(hasDuplicateLoginId(signupForm.getLoginId())) throw new DuplicatedLoginIdException();
-        signupForm.setPassword(encryptPassword(signupForm.getPassword()));
-        Member member = Member.createMember(signupForm);
-        Member savedMember = memberRepository.save(member);
-        return savedMember;
-    }
+        if (hasDuplicateLoginId(signupForm.getLoginId()))
+            throw new DuplicatedLoginIdException();
 
-    private String encryptPassword(String password) {
-        return passwordEncoder.encode(password);
+        Member member = Member.createMember(signupForm);
+        member.encryptPassword(passwordEncoder);
+
+        return memberRepository.save(member);
     }
 
     private boolean hasDuplicateLoginId(String loginId) {
-        if(memberRepository.findByLoginId(loginId).isPresent()) return true;
-        return false;
+        return memberRepository.findByLoginId(loginId).isPresent();
     }
 }

@@ -57,12 +57,15 @@ public class Member extends BaseEntity {
     public static Member createMember(SignupForm signupForm) {
         Member member = new Member();
         member.loginId = signupForm.getLoginId();
-
         member.password = signupForm.getPassword();
         member.name = signupForm.getName();
         member.email = signupForm.getEmail();
         member.phoneNumber = signupForm.getPhoneNumber();
         member.createdBy = signupForm.getLoginId();
         return member;
+    }
+
+    public void encryptPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
     }
 }
