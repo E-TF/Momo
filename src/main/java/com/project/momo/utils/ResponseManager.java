@@ -1,6 +1,6 @@
 package com.project.momo.utils;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

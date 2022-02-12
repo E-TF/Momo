@@ -2,7 +2,7 @@ package com.project.momo.exception;
 
 import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

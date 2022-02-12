@@ -2,7 +2,7 @@ package com.project.momo.security.handler;
 
 import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;

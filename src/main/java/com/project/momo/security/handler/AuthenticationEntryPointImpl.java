@@ -3,7 +3,7 @@ package com.project.momo.security.handler;
 import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 

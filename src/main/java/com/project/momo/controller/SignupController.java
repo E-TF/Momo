@@ -6,7 +6,7 @@ import com.project.momo.service.SignupService;
 import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
