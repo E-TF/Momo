@@ -20,13 +20,16 @@ import java.util.Date;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
+    private final String MEMBER_ID_CLAIM_NAME = "memberId";
+    private final int VALID_TIME_TO_MILLS = 1000;
+
     private final String secret;
     private final long tokenValidTimeInMillis;
     private Key key;
 
     public TokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.token-valid-time-in-seconds}") long tokenValidTimeInSeconds) {
         this.secret = secret;
-        this.tokenValidTimeInMillis = tokenValidTimeInSeconds * 1000;
+        this.tokenValidTimeInMillis = tokenValidTimeInSeconds * VALID_TIME_TO_MILLS;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setExpiration(expireAt)
-                .claim("memberId", userDetails.getId())
+                .claim(MEMBER_ID_CLAIM_NAME, userDetails.getId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -53,13 +56,13 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setExpiration(expireAt)
-                .claim("memberId", (Long) authentication.getPrincipal())
+                .claim(MEMBER_ID_CLAIM_NAME, (Long) authentication.getPrincipal())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public Authentication getAuthentication(String jwt) {
-        Long memberId = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody().get("memberId", Long.class);
+        Long memberId = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody().get(MEMBER_ID_CLAIM_NAME, Long.class);
         return new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
     }
 

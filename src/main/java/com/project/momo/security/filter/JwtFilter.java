@@ -3,6 +3,7 @@ package com.project.momo.security.filter;
 import com.project.momo.security.jwt.TokenProvider;
 import com.project.momo.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -19,7 +20,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private final String AUTHORIZATION_HEADER = "Authorization";
+    private final String TOKEN_PREFIX = "Bearer ";
+    private final int TOKEN_PREFIX_SUBSTRING_VALUE = 7;
+
     private final TokenProvider tokenProvider;
 
     @Override
@@ -36,9 +39,9 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(TOKEN_PREFIX_SUBSTRING_VALUE);
         }
 
         return null;
