@@ -1,5 +1,6 @@
 package com.project.momo.security.config;
 
+import com.project.momo.security.filter.JwtExceptionFilter;
 import com.project.momo.security.filter.JwtFilter;
 import com.project.momo.security.filter.LoginAuthenticationFilter;
 import com.project.momo.security.handler.AuthenticationEntryPointImpl;
@@ -38,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterAt(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter(), LoginAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionFilter(), JwtFilter.class);
     }
 
     @Bean
@@ -73,4 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationEntryPointImpl();
     }
 
+    @Bean
+    public JwtExceptionFilter jwtExceptionFilter() {
+        return new JwtExceptionFilter();
+    }
 }

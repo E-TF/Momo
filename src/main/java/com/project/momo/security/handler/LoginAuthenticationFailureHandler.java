@@ -4,7 +4,6 @@ import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
 import org.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
@@ -17,12 +16,11 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
-        String message = null;
-        if (exception instanceof InternalAuthenticationServiceException) {
-            message = "존재하지 않는 아이디이거나 아이디를 잘못 입력했습니다.";
-        }
+        String message;
         if (exception instanceof BadCredentialsException) {
             message = "비밀번호를 잘못 입력했습니다.";
+        } else {
+            message = exception.getMessage();
         }
 
         JSONObject jsonObject = JsonConverter.stringToJson(message);
