@@ -1,14 +1,13 @@
 package com.project.momo.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
-import org.json.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,14 +22,9 @@ public class GlobalExceptionHandler {
         BindingResult bindingResult = exception.getBindingResult();
 
         Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-        JSONObject jsonObject = JsonConverter.mapToJson(errors);
+        String json = JsonConverter.mapToJson(errors);
 
-        ResponseManager.sendError(response, jsonObject, HttpServletResponse.SC_BAD_REQUEST);
+        ResponseManager.sendError(response, json, HttpServletResponse.SC_BAD_REQUEST);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public void handleNoHandlerFoundException(HttpServletResponse response) throws IOException {
-        JSONObject jsonObject = JsonConverter.stringToJson("page not found");
-        ResponseManager.sendError(response, jsonObject, HttpServletResponse.SC_NOT_FOUND);
-    }
 }

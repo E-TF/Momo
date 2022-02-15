@@ -1,29 +1,36 @@
 package com.project.momo.utils;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.momo.dto.error.ErrorMessageDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
+@RequiredArgsConstructor
+@Component
 public class JsonConverter {
 
-    private static final String DEFAULT_KEY = "ERROR";
-
-    public static JSONObject stringToJson(String value) {
-        return stringToJson(DEFAULT_KEY, value);
+    @PostConstruct
+    public void postConstruct() {
+        this.staticObjectMapper = this.objectMapper;
+        System.out.println(staticObjectMapper);
     }
 
-    public static JSONObject stringToJson(String key, String value) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(key, value);
+    private static ObjectMapper staticObjectMapper;
+    private final ObjectMapper objectMapper;
 
-        return jsonObject;
+    public static String convert(String message) throws JsonProcessingException {
+        ErrorMessageDto errorMessageDto = new ErrorMessageDto(message);
+        System.out.println(errorMessageDto);
+        System.out.println(staticObjectMapper);
+        return staticObjectMapper.writeValueAsString(errorMessageDto);
     }
 
-    public static JSONObject mapToJson(Map<String, String> map) {
-        JSONObject jsonObject = new JSONObject();
-        map.keySet().forEach(k -> jsonObject.put(k, map.get(k)));
-
-        return jsonObject;
+    public static String mapToJson(Map map) throws JsonProcessingException {
+        return staticObjectMapper.writeValueAsString(map);
     }
 
 }

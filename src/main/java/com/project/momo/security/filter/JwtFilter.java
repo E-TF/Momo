@@ -1,6 +1,7 @@
 package com.project.momo.security.filter;
 
 import com.project.momo.security.jwt.TokenProvider;
+import com.project.momo.utils.JwtUtils;
 import com.project.momo.utils.ResponseManager;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -24,30 +25,17 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private final String TOKEN_PREFIX = "Bearer ";
-    private final int TOKEN_PREFIX_SUBSTRING_VALUE = 7;
-
     private final TokenProvider tokenProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
-        String jwt = resolveToken((HttpServletRequest) request);
-
-        if (StringUtils.hasText(jwt) && tokenProvider.validate(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
+        String accessJwt = JwtUtils.resolveAccessToken((HttpServletRequest) request);
+        if (StringUtils.hasText(accessJwt) && tokenProvider.validate(accessJwt)) {
+            Authentication authentication = tokenProvider.getAuthentication(accessJwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            ResponseManager.setResponseToken((HttpServletResponse) response, tokenProvider.refreshToken(authentication));
         }
 
         chain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_PREFIX_SUBSTRING_VALUE);
-        }
-
-        return null;
-    }
 }

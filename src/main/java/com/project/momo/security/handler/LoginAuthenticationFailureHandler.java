@@ -1,8 +1,6 @@
 package com.project.momo.security.handler;
 
-import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
-import org.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -23,7 +21,6 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
             message = exception.getMessage();
         }
 
-        JSONObject jsonObject = JsonConverter.stringToJson(message);
-        ResponseManager.sendError(response, jsonObject, HttpServletResponse.SC_BAD_REQUEST);
+        ResponseManager.sendError(response, message, HttpServletResponse.SC_BAD_REQUEST);
     }
 }

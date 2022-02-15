@@ -3,10 +3,8 @@ package com.project.momo.controller;
 import com.project.momo.dto.signup.SignupForm;
 import com.project.momo.exception.DuplicatedLoginIdException;
 import com.project.momo.service.SignupService;
-import com.project.momo.utils.JsonConverter;
 import com.project.momo.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +25,6 @@ public class SignupController {
 
     @ExceptionHandler(DuplicatedLoginIdException.class)
     public void handleDuplicatedLoginIdException(HttpServletResponse response, DuplicatedLoginIdException exception) throws IOException {
-        JSONObject jsonObject = JsonConverter.stringToJson(exception.getMessage());
-        ResponseManager.sendError(response, jsonObject, HttpServletResponse.SC_BAD_REQUEST);
+        ResponseManager.sendError(response, exception.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
     }
 }

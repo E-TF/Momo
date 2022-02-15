@@ -3,10 +3,10 @@ package com.project.momo.security.config;
 import com.project.momo.security.filter.JwtExceptionFilter;
 import com.project.momo.security.filter.JwtFilter;
 import com.project.momo.security.filter.LoginAuthenticationFilter;
-import com.project.momo.security.handler.AuthenticationEntryPointImpl;
 import com.project.momo.security.handler.LoginAuthenticationFailureHandler;
 import com.project.momo.security.handler.LoginAuthenticationSuccessHandler;
 import com.project.momo.security.jwt.TokenProvider;
+import com.project.momo.service.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -23,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
+    private final AuthorizationService authorizationService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,10 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint());
-
+       
         http.addFilterAt(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter(), LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter(), JwtFilter.class);
@@ -62,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LoginAuthenticationSuccessHandler loginAuthenticationSuccessHandler() {
-        return new LoginAuthenticationSuccessHandler();
+        return new LoginAuthenticationSuccessHandler(tokenProvider, authorizationService);
     }
 
     @Bean
@@ -71,12 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return new AuthenticationEntryPointImpl();
-    }
-
-    @Bean
     public JwtExceptionFilter jwtExceptionFilter() {
-        return new JwtExceptionFilter();
+        return new JwtExceptionFilter(tokenProvider);
     }
 }
