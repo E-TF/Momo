@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RequiredArgsConstructor
 public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -20,12 +19,12 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     private final AuthorizationService authorizationService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String accessToken = tokenProvider.createToken(authentication, TokenType.ACCESS);
         String refreshToken = tokenProvider.createToken(authentication, TokenType.REFRESH);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         authorizationService.saveRefreshToken(userDetails.getId(), refreshToken);
 
-        ResponseManager.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        ResponseManager.sendAccessAndRefreshToken(response, accessToken, refreshToken, HttpServletResponse.SC_CREATED);
     }
 }

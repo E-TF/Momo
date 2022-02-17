@@ -3,6 +3,7 @@ package com.project.momo.security.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.momo.dto.login.LoginForm;
+import com.project.momo.utils.RequestWrapper;
 import com.project.momo.utils.ResponseManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,13 +30,16 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         try {
-            LoginForm loginForm = objectMapper.readValue(request.getReader().lines().collect(Collectors.joining()), LoginForm.class);
+            RequestWrapper wrapper = new RequestWrapper(request);
+
+            LoginForm loginForm = objectMapper.readValue(wrapper.getReader().lines().collect(Collectors.joining()), LoginForm.class);
+
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(loginForm.getLoginId(), loginForm.getPassword());
             auth.setDetails(request);
 
             return this.getAuthenticationManager().authenticate(auth);
         } catch (JsonProcessingException e) {
-            ResponseManager.sendError(response, "올바르지 않은 Json 포맷입니다.", HttpServletResponse.SC_BAD_REQUEST);
+            ResponseManager.sendError(response, e, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         return null;

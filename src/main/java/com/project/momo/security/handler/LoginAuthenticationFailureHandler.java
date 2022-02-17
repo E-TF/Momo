@@ -1,7 +1,6 @@
 package com.project.momo.security.handler;
 
 import com.project.momo.utils.ResponseManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
@@ -14,13 +13,6 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
-        String message;
-        if (exception instanceof BadCredentialsException) {
-            message = "비밀번호를 잘못 입력했습니다.";
-        } else {
-            message = exception.getMessage();
-        }
-
-        ResponseManager.sendError(response, message, HttpServletResponse.SC_BAD_REQUEST);
+        ResponseManager.sendError(response, exception, HttpServletResponse.SC_BAD_REQUEST);
     }
 }

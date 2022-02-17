@@ -29,12 +29,15 @@ public class TokenProvider implements InitializingBean {
     private final long accessTokenValidTimeInMillis;
     private final long refreshTokenValidTimeInMillis;
     private final AuthorizationService authorizationService;
+
+    private JwtParser jwtParser;
     private Key key;
 
     public TokenProvider(@Value("${jwt.secret}") String secret,
                          @Value("${jwt.access-token-valid-time-in-seconds}") long accessTokenValidTimeInSeconds,
                          @Value("${jwt.refresh-token-valid-time-in-seconds}") long refreshTokenValidTimeInSeconds,
-                         AuthorizationService authorizationService) {
+                         AuthorizationService authorizationService
+    ) {
         this.secret = secret;
         this.accessTokenValidTimeInMillis = accessTokenValidTimeInSeconds * VALID_TIME_TO_MILLS;
         this.refreshTokenValidTimeInMillis = refreshTokenValidTimeInSeconds * VALID_TIME_TO_MILLS;
@@ -45,32 +48,35 @@ public class TokenProvider implements InitializingBean {
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
     public String createToken(Authentication authentication, TokenType tokenType) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        JwtBuilder jwtBuilder = Jwts.builder();
+
         long now = (new Date()).getTime();
-        Date expireAt = new Date();  //TODO 여기 고치자
-        if (tokenType == TokenType.ACCESS)
+        Date expireAt = new Date();
+
+        if (tokenType == TokenType.ACCESS) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            jwtBuilder.claim(JwtUtils.MEMBER_ID_CLAIM_NAME, userDetails.getId());
             expireAt = new Date(now + accessTokenValidTimeInMillis);
-        else if (tokenType == TokenType.REFRESH)
+        } else if (tokenType == TokenType.REFRESH)
             expireAt = new Date(now + refreshTokenValidTimeInMillis);
 
-        return Jwts.builder()
+        return jwtBuilder
                 .setExpiration(expireAt)
-                .claim(JwtUtils.MEMBER_ID_CLAIM_NAME, userDetails.getId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public Authentication getAuthentication(String jwt) {
-        Long memberId = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody().get(JwtUtils.MEMBER_ID_CLAIM_NAME, Long.class);
+        Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtUtils.MEMBER_ID_CLAIM_NAME, Long.class);
         return new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
     }
 
     public boolean validate(String jwt) throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
-
-        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+        jwtParser.parseClaimsJws(jwt);
         return true;
     }
 

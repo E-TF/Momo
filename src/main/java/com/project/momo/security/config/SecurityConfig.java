@@ -3,6 +3,7 @@ package com.project.momo.security.config;
 import com.project.momo.security.filter.JwtExceptionFilter;
 import com.project.momo.security.filter.JwtFilter;
 import com.project.momo.security.filter.LoginAuthenticationFilter;
+import com.project.momo.security.handler.AuthenticationEntryPointImpl;
 import com.project.momo.security.handler.LoginAuthenticationFailureHandler;
 import com.project.momo.security.handler.LoginAuthenticationSuccessHandler;
 import com.project.momo.security.jwt.TokenProvider;
@@ -29,11 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .mvcMatchers("/api/signup", "/api/login", "/favicon/**").permitAll()
+                .mvcMatchers("/api/signup/**", "/api/login", "/favicon/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-       
+
+        http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl());
+
         http.addFilterAt(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter(), LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter(), JwtFilter.class);
@@ -47,19 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public LoginAuthenticationFilter loginAuthenticationFilter() throws Exception {
         LoginAuthenticationFilter loginFilter = new LoginAuthenticationFilter("/api/login", authenticationManager());
-        loginFilter.setAuthenticationSuccessHandler(loginAuthenticationSuccessHandler());
-        loginFilter.setAuthenticationFailureHandler(loginAuthenticationFailureHandler());
+        loginFilter.setAuthenticationSuccessHandler(new LoginAuthenticationSuccessHandler(tokenProvider, authorizationService));
+        loginFilter.setAuthenticationFailureHandler(new LoginAuthenticationFailureHandler());
         return loginFilter;
-    }
-
-    @Bean
-    public LoginAuthenticationFailureHandler loginAuthenticationFailureHandler() {
-        return new LoginAuthenticationFailureHandler();
-    }
-
-    @Bean
-    public LoginAuthenticationSuccessHandler loginAuthenticationSuccessHandler() {
-        return new LoginAuthenticationSuccessHandler(tokenProvider, authorizationService);
     }
 
     @Bean

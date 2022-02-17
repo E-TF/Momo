@@ -16,12 +16,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws LoginIdNotFoundException {
+        Member member = memberRepository.findByLoginId(username).orElseThrow(LoginIdNotFoundException::getInstance);
 
-        if (memberRepository.findByLoginId(username).isPresent()) {
-            Member member = memberRepository.findByLoginId(username).get();
-            return new UserDetailsImpl(member.getId(), member.getLoginId(), member.getPassword());
-        }
-
-        throw new LoginIdNotFoundException();
+        return new UserDetailsImpl(member.getId(), member.getLoginId(), member.getPassword());
     }
 }
