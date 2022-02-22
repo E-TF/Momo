@@ -1,27 +1,25 @@
 package com.project.momo.security.jwt;
 
-import com.project.momo.enums.TokenType;
-import com.project.momo.security.userdetails.UserDetailsImpl;
+import com.project.momo.common.exception.JwtException;
+import com.project.momo.security.consts.JwtConst;
+import com.project.momo.security.consts.TokenType;
 import com.project.momo.service.AuthorizationService;
-import com.project.momo.utils.JwtUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Collections;
 import java.util.Date;
 
 @Component
-@Slf4j
-public class TokenProvider implements InitializingBean {
+public class TokenProvider {
 
     private final int VALID_TIME_TO_MILLS = 1000;
 
@@ -44,22 +42,21 @@ public class TokenProvider implements InitializingBean {
         this.authorizationService = authorizationService;
     }
 
-    @Override
-    public void afterPropertiesSet() {
+    @PostConstruct
+    public void init() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
-    public String createToken(Authentication authentication, TokenType tokenType) {
+    public String createToken(Long memberId, TokenType tokenType) {
         JwtBuilder jwtBuilder = Jwts.builder();
 
         long now = (new Date()).getTime();
         Date expireAt = new Date();
 
         if (tokenType == TokenType.ACCESS) {
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            jwtBuilder.claim(JwtUtils.MEMBER_ID_CLAIM_NAME, userDetails.getId());
+            jwtBuilder.claim(JwtConst.MEMBER_ID_CLAIM_NAME, memberId);
             expireAt = new Date(now + accessTokenValidTimeInMillis);
         } else if (tokenType == TokenType.REFRESH)
             expireAt = new Date(now + refreshTokenValidTimeInMillis);
@@ -71,28 +68,41 @@ public class TokenProvider implements InitializingBean {
     }
 
     public Authentication getAuthentication(String jwt) {
-        Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtUtils.MEMBER_ID_CLAIM_NAME, Long.class);
+        Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtConst.MEMBER_ID_CLAIM_NAME, Long.class);
         return new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
     }
 
-    public boolean validate(String jwt) throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
-        jwtParser.parseClaimsJws(jwt);
+    public boolean validate(String jwt) throws JwtException {
+        try {
+            jwtParser.parseClaimsJws(jwt);
+        } catch (SignatureException | MalformedJwtException e) {
+            throw new JwtException("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtException("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("JWT 토큰이 잘못되었습니다.");
+        }
         return true;
     }
 
-    public boolean validateRefreshToken(Long memberId, String jwt) {
-        validate(jwt);
-        return authorizationService.checkRefreshToken(memberId, jwt);
+    public Long validateRefreshToken(String jwt) throws JwtException {
+        try {
+            validate(jwt);
+        } catch (SignatureException | MalformedJwtException e) {
+            throw new JwtException("잘못된 Refresh JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("만료된 Refresh JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtException("지원되지 않는 Refresh JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("Refresh JWT 토큰이 잘못되었습니다.");
+        }
+        return authorizationService.checkRefreshToken(jwt);
     }
 
     public String reissue(Long memberId) {
-        long now = (new Date()).getTime();
-        Date expireAt = new Date(now + accessTokenValidTimeInMillis);
-
-        return Jwts.builder()
-                .setExpiration(expireAt)
-                .claim(JwtUtils.MEMBER_ID_CLAIM_NAME, memberId)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
+        return createToken(memberId, TokenType.ACCESS);
     }
 }

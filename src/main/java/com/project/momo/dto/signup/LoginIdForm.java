@@ -1,17 +1,14 @@
 package com.project.momo.dto.signup;
 
+import com.project.momo.common.annotation.LoginId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class LoginIdForm {
 
-    @Size(min = 3, max = 45)
-    @NotBlank
+    @LoginId
     private String loginId;
 }

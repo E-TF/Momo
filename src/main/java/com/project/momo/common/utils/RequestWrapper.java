@@ -1,4 +1,4 @@
-package com.project.momo.utils;
+package com.project.momo.common.utils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;

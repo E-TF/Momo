@@ -2,9 +2,9 @@ package com.project.momo.service;
 
 import com.project.momo.dto.signup.SignupForm;
 import com.project.momo.entity.Member;
-import com.project.momo.exception.DuplicatedLoginIdException;
+import com.project.momo.common.exception.BusinessException;
+import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.repository.MemberRepository;
-import com.project.momo.utils.EncryptUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,11 @@ public class SignupService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(SignupForm signupForm) throws DuplicatedLoginIdException{
+    public void signup(SignupForm signupForm) throws BusinessException {
         checkDuplicateLoginId(signupForm.getLoginId());
-        String encryptedPassword = EncryptUtils.encrypt(signupForm.getPassword(), passwordEncoder);
         Member member = Member.createMember(
                 signupForm.getLoginId(),
-                encryptedPassword,
+                passwordEncoder.encode(signupForm.getPassword()),
                 signupForm.getName(),
                 signupForm.getEmail(),
                 signupForm.getPhoneNumber());
@@ -32,9 +31,9 @@ public class SignupService {
         memberRepository.save(member);
     }
 
-    private void checkDuplicateLoginId(String loginId) throws DuplicatedLoginIdException{
+    private void checkDuplicateLoginId(String loginId) throws BusinessException {
         if (hasDuplicateLoginId(loginId)) {
-            throw DuplicatedLoginIdException.getInstance();
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
         }
     }
 

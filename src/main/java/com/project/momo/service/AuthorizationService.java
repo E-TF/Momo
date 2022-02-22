@@ -1,6 +1,7 @@
 package com.project.momo.service;
 
 import com.project.momo.entity.RefreshToken;
+import com.project.momo.common.exception.JwtException;
 import com.project.momo.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,12 @@ public class AuthorizationService {
     }
 
     @Transactional
-    public boolean checkRefreshToken(Long memberId, String refreshToken) {
-        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findById(memberId);
-        return optionalRefreshToken.isPresent() && optionalRefreshToken.get().getToken().equals(refreshToken);
+    public Long checkRefreshToken(String refreshToken) throws JwtException {
+        RefreshToken findByToken = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new JwtException("조작된 Refresh Token 입니다."));
+        if (findByToken.getToken().equals(refreshToken))
+            return findByToken.getMemberId();
+
+        throw new JwtException("조작된 Refresh Token 입니다.");
     }
 
 }

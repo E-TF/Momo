@@ -1,7 +1,7 @@
 package com.project.momo.security.userdetails;
 
 import com.project.momo.entity.Member;
-import com.project.momo.exception.LoginIdNotFoundException;
+import com.project.momo.common.exception.LoginIdNotFoundException;
 import com.project.momo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -3,7 +3,6 @@ package com.project.momo.service;
 import com.project.momo.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,9 +16,8 @@ public class LogoutService {
 
     @Transactional
     public void logout(Long memberId) {
-        try {
+        if (refreshTokenRepository.findById(memberId).isPresent())
             refreshTokenRepository.deleteById(memberId);
-        } catch (EmptyResultDataAccessException e) {}
     }
 
 }

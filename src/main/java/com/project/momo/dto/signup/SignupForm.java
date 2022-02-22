@@ -1,37 +1,27 @@
 package com.project.momo.dto.signup;
 
+import com.project.momo.common.annotation.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SignupForm {
 
-    @Size(min = 3, max = 45)
-    @NotBlank
+    @LoginId
     private String loginId;
 
-    @NotBlank
-    @Size(min = 11, max = 20)
+    @Password
     private String password;
 
-    @Size(max = 45)
-    @NotBlank
+    @MemberName
     private String name;
 
-    @Size(max = 255)
-    @Email
-    @NotEmpty
+    @MemberEmail
     private String email;
 
-    @Size(max = 20)
-    @NotBlank
+    @PhoneNumber
     private String phoneNumber;
 
 }

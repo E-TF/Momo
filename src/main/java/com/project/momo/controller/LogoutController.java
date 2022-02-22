@@ -1,5 +1,6 @@
 package com.project.momo.controller;
 
+import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.service.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +17,7 @@ public class LogoutController {
 
     @GetMapping
     public void logout() {
-        Long memberId  = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        logoutService.logout(memberId);
+        logoutService.logout(AuthUtils.getMemberId());
     }
 
 }

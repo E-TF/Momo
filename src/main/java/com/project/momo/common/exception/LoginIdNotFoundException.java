@@ -1,4 +1,4 @@
-package com.project.momo.exception;
+package com.project.momo.common.exception;
 
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 
