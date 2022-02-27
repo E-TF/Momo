@@ -1,11 +1,4 @@
-server:
-  port: 8081
-
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.37.123.27:3306/momo
-    username: admin
   jpa:
     hibernate:
       ddl-auto: validate
@@ -16,3 +9,13 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  main:
+    allow-circular-references: true
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force-response: true
+  port: 8081

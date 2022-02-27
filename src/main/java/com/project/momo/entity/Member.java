@@ -52,15 +52,15 @@ public class Member extends BaseEntity {
     @Max(3)
     private int paymentCnt;
 
-    public static Member createMember(String loginId, String password, String name, String email, String phoneNumber, ImageUrl imageUrl) {
+    public static Member createMember(String loginId, String password, String name, String email, String phoneNumber) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
         member.name = name;
         member.email = email;
         member.phoneNumber = phoneNumber;
-        member.imageUrl = imageUrl;
         member.createdBy = loginId;
         return member;
     }
+
 }
