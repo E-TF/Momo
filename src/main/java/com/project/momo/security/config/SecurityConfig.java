@@ -4,6 +4,9 @@ import com.project.momo.security.filter.JwtExceptionFilter;
 import com.project.momo.security.filter.JwtFilter;
 import com.project.momo.security.filter.LoginAuthenticationFilter;
 import com.project.momo.security.jwt.AuthenticationEntryPointImpl;
+import com.project.momo.security.jwt.LoginAuthenticationFailureHandler;
+import com.project.momo.security.jwt.LoginAuthenticationSuccessHandler;
+import com.project.momo.security.oauth.OAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.annotation.PostConstruct;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -27,6 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
     private final LoginAuthenticationFilter loginAuthenticationFilter;
 
+    private final OAuth2UserServiceImpl oAuth2UserService;
+    private final LoginAuthenticationSuccessHandler successHandler;
+    private final LoginAuthenticationFailureHandler failureHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -36,9 +48,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, "/api/login").permitAll()
                 .mvcMatchers(POST, "/api/members/new").permitAll()
                 .mvcMatchers(GET, "/api/members/checkDuplicateLoginId").permitAll()
+                .mvcMatchers(GET, "/login/**").permitAll()
+                .mvcMatchers(POST, "/login/**").permitAll()
+                .mvcMatchers(GET, "/oauth2/**").permitAll()
+                .mvcMatchers(POST, "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+                .and()
+                .successHandler(successHandler).failureHandler(failureHandler);
 
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 

@@ -20,4 +20,15 @@ public class ImageUrl extends BaseEntity {
     @Size(max = 500)
     @NotNull
     private String imageUrl;
+
+    public static ImageUrl ofUrl(String imageUrl, Long createdBy) {
+        ImageUrl newImgUrl = new ImageUrl();
+        newImgUrl.imageUrl = imageUrl;
+        newImgUrl.createdBy = createdBy;
+        return newImgUrl;
+    }
+
+    public void update(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
