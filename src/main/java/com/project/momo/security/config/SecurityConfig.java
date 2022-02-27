@@ -34,8 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login").permitAll()
-                .mvcMatchers(POST, "/api/members/new").permitAll()
-                .mvcMatchers(GET, "/api/members/checkDuplicateLoginId").permitAll()
+                .mvcMatchers(POST, "/api/members/signup").permitAll()
+                .mvcMatchers(GET, "/api/members/loginid/duplicate").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

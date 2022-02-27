@@ -2,12 +2,11 @@ package com.project.momo.security.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.PropertyBindingException;
-import com.project.momo.common.component.ResponseError;
+import com.project.momo.common.exception.ErrorDto;
+import com.project.momo.common.utils.RequestWrapper;
 import com.project.momo.dto.login.LoginForm;
 import com.project.momo.security.jwt.LoginAuthenticationFailureHandler;
 import com.project.momo.security.jwt.LoginAuthenticationSuccessHandler;
-import com.project.momo.common.utils.RequestWrapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,16 +25,13 @@ import java.util.stream.Collectors;
 public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final ObjectMapper objectMapper;
-    private final ResponseError responseError;
 
     public LoginAuthenticationFilter(ObjectMapper objectMapper,
-                                     ResponseError responseError,
                                      @Lazy AuthenticationManager authenticationManager,
                                      LoginAuthenticationSuccessHandler successHandler,
                                      LoginAuthenticationFailureHandler failureHandler) {
         super("/api/login", authenticationManager);
         this.objectMapper = objectMapper;
-        this.responseError = responseError;
         setAuthenticationSuccessHandler(successHandler);
         setAuthenticationFailureHandler(failureHandler);
     }
@@ -52,7 +48,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
         } catch (JsonProcessingException e) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(responseError.toJson(e));
+            response.getWriter().write(objectMapper.writeValueAsString(new ErrorDto(e)));
         }
         return null;
     }
