@@ -7,14 +7,15 @@ import lombok.Getter;
 @Getter
 public abstract class OAuthAttributes {
 
+    private OauthType oauthType;
+    private String nameAttributeKey;
+    private long oauthId;
     private String name;
     private String email;
     private String imageUrl;
-    private OauthType oauthType;
-    private long oauthId;
-    private String nameAttributeKey;
 
-    protected OAuthAttributes(String name, String email, String imageUrl, OauthType oauthType, long oauthId, String nameAttributeKey) {
+
+    protected OAuthAttributes(OauthType oauthType, String nameAttributeKey, long oauthId, String name, String email, String imageUrl) {
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
@@ -26,5 +27,4 @@ public abstract class OAuthAttributes {
     public Member toMember() {
         return Member.ofOauth(oauthType, oauthId, name, email);
     }
-
 }

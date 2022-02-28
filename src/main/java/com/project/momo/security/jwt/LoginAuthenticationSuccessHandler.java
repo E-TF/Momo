@@ -7,7 +7,6 @@ import com.project.momo.security.userdetails.UserDetailsImpl;
 import com.project.momo.service.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,13 +25,8 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Long memberId;
-        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication1.getClass());
-        System.out.println(authentication1);
         if (authentication instanceof OAuth2AuthenticationToken) {
-            System.out.println("LoginAuthenticationSuccessHandler.onAuthenticationSuccess instanceof 안타야 성공인거임");
-            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
-            memberId = memberRepository.findByOauthTypeAndOauthId(OauthType.valueOf(authToken.getPrincipal().getAttribute("type")), Long.valueOf(authToken.getName())).get().getId();
+            memberId = memberRepository.findByOauthTypeAndOauthId(OauthType.get(((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId()), Long.valueOf(authentication.getName())).get().getId();
         } else {
             memberId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         }
