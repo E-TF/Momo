@@ -1,6 +1,7 @@
 package com.project.momo.security.jwt;
 
-import com.project.momo.common.component.ResponseError;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.momo.common.exception.ErrorDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -15,12 +16,12 @@ import java.io.IOException;
 @Component
 public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private final ResponseError responseError;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(responseError.toJson(exception));
+        response.getWriter().write(objectMapper.writeValueAsString(new ErrorDto(exception)));
     }
 }

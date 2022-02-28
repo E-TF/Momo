@@ -1,33 +1,29 @@
 package com.project.momo.common.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.project.momo.common.component.ResponseError;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RequiredArgsConstructor
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private final ResponseError responseError;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        return responseError.from(new InvalidArgumentException(exception), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(new InvalidArgsException(exception)));
     }
 
     @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity<ErrorDto> handleJsonProcessingException() {
-        return responseError.of(ErrorCode.INVALID_JSON_FORMAT);
+    public ResponseEntity<ErrorDto> handleJsonProcessingException(JsonProcessingException exception) {
+        ErrorCode code = ErrorCode.INVALID_JSON_FORMAT;
+        return ResponseEntity.status(code.getHttpStatus()).body(new ErrorDto(code));
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorDto> handleBusinessException(BusinessException exception) {
-        return responseError.of(exception.getErrorCode());
+        ErrorCode code = exception.getErrorCode();
+        return ResponseEntity.status(code.getHttpStatus()).body(new ErrorDto(code));
     }
-
 }

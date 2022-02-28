@@ -1,6 +1,10 @@
 package com.project.momo.security.consts;
 
-public abstract class JwtConst {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class JwtConst {
 
     public static final String REFRESH_TOKEN_HEADER = "refresh-token";
 

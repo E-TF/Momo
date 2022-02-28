@@ -35,10 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
     private final LoginAuthenticationFilter loginAuthenticationFilter;
 
-    private final OAuth2UserServiceImpl oAuth2UserService;
-    private final LoginAuthenticationSuccessHandler successHandler;
-    private final LoginAuthenticationFailureHandler failureHandler;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -48,19 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, "/api/login").permitAll()
                 .mvcMatchers(POST, "/api/members/new").permitAll()
                 .mvcMatchers(GET, "/api/members/checkDuplicateLoginId").permitAll()
-                .mvcMatchers(GET, "/login/**").permitAll()
-                .mvcMatchers(POST, "/login/**").permitAll()
-                .mvcMatchers(GET, "/oauth2/**").permitAll()
-                .mvcMatchers(POST, "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.oauth2Login()
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
-                .and()
-                .successHandler(successHandler).failureHandler(failureHandler);
 
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
