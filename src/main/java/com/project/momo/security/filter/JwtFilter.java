@@ -1,7 +1,7 @@
 package com.project.momo.security.filter;
 
 import com.project.momo.security.consts.TokenType;
-import com.project.momo.common.exception.JwtException;
+import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.security.jwt.TokenProvider;
 import com.project.momo.common.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;

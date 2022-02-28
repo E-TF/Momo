@@ -1,7 +1,7 @@
 package com.project.momo.service;
 
 import com.project.momo.entity.RefreshToken;
-import com.project.momo.common.exception.JwtException;
+import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

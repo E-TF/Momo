@@ -57,13 +57,12 @@ public class Member extends BaseEntity {
     @Column(name = "oauth_id")
     private long oauthId;
 
-    public void setImageUrl(ImageUrl imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void update(String name, String email, ImageUrl imageUrl) {
+    public void update(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 

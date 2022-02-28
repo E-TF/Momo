@@ -1,7 +1,7 @@
 package com.project.momo.common.utils;
 
 import com.project.momo.security.consts.TokenType;
-import com.project.momo.common.exception.JwtException;
+import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.security.consts.JwtConst;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.StringUtils;

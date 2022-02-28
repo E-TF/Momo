@@ -2,7 +2,7 @@ package com.project.momo.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.momo.common.exception.ErrorDto;
-import com.project.momo.common.exception.JwtException;
+import com.project.momo.common.exception.auth.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

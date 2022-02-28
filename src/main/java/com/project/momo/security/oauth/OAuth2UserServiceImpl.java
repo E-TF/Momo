@@ -1,11 +1,11 @@
 package com.project.momo.security.oauth;
 
+import com.project.momo.common.exception.auth.NoRegistrationFound;
 import com.project.momo.security.consts.OauthType;
 import com.project.momo.security.oauth.dto.GithubOAuthAttributes;
 import com.project.momo.security.oauth.dto.OAuthAttributes;
 import com.project.momo.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -32,12 +32,11 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        OAuthAttributes oAuthAttributes = null;
+        OAuthAttributes oAuthAttributes;
         if (OauthType.GITHUB.equals(registrationId)) {
             oAuthAttributes = GithubOAuthAttributes.ofAttributes(attributes);
-        } else {
-            throw new AuthenticationException("여기는 500에러가 나야하네");
-        }
+        } else
+            throw NoRegistrationFound.getInstance();
 
         memberService.saveOrUpdate(oAuthAttributes);
 

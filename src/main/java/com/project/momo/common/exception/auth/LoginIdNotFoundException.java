@@ -1,11 +1,8 @@
-package com.project.momo.common.exception;
+package com.project.momo.common.exception.auth;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 
 public class LoginIdNotFoundException extends InternalAuthenticationServiceException {
-
-    private final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
 
     private static final LoginIdNotFoundException INSTANCE = new LoginIdNotFoundException();
 
@@ -15,9 +12,5 @@ public class LoginIdNotFoundException extends InternalAuthenticationServiceExcep
 
     public static LoginIdNotFoundException getInstance() {
         return INSTANCE;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return this.httpStatus;
     }
 }

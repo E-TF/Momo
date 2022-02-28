@@ -1,11 +1,8 @@
-package com.project.momo.common.exception;
+package com.project.momo.common.exception.auth;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 
 public class InsufficientOAuthAttributesException extends AuthenticationException {
-
-    private final HttpStatus httpStatus = HttpStatus.LOCKED;
 
     private static final InsufficientOAuthAttributesException INSTANCE = new InsufficientOAuthAttributesException();
 
@@ -15,10 +12,6 @@ public class InsufficientOAuthAttributesException extends AuthenticationExceptio
 
     public static InsufficientOAuthAttributesException getInstance() {
         return INSTANCE;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return this.httpStatus;
     }
 }
 

@@ -4,6 +4,8 @@ import com.project.momo.entity.Member;
 import com.project.momo.security.consts.OauthType;
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Getter
 public abstract class OAuthAttributes {
 
@@ -12,10 +14,10 @@ public abstract class OAuthAttributes {
     private long oauthId;
     private String name;
     private String email;
-    private String imageUrl;
+    private Optional<String> imageUrl;
 
 
-    protected OAuthAttributes(OauthType oauthType, String nameAttributeKey, long oauthId, String name, String email, String imageUrl) {
+    protected OAuthAttributes(OauthType oauthType, String nameAttributeKey, long oauthId, String name, String email, Optional<String> imageUrl) {
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
