@@ -17,14 +17,14 @@ public class Member extends BaseEntity {
     @GeneratedValue(generator = "SEQ_GENERATOR")
     private Long id;
 
-    @Column(name = "login_id", length = 45, unique = true)
+    @Column(name = "login_id", unique = true)
     @Size(min = 3, max = 45)
     private String loginId;
 
     @Size(max = 255)
     private String password;
 
-    @Column(length = 45)
+    @Column
     @Size(max = 45)
     @NotBlank
     private String name;
@@ -41,9 +41,9 @@ public class Member extends BaseEntity {
     @Min(0)
     private long points;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_url_id")
-    private ImageUrl imageUrl;
+    @Column(name = "image_url")
+    @Size(max = 500)
+    private String imageUrl;
 
     @Column(name = "payment_cnt", columnDefinition = "TINYINT")
     @Min(0)

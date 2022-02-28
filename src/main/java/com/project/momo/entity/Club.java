@@ -15,17 +15,17 @@ public class Club extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 45, unique = true)
+    @Column(unique = true)
     @Size(max = 45)
     @NotBlank
     private String name;
 
-    @Column(length = 1000)
+    @Column
     @Size(max = 1000)
     @NotBlank
     private String description;
 
-    @Column(length = 45)
+    @Column
     @Size(max = 45)
     @NotBlank
     private String category;
@@ -38,9 +38,9 @@ public class Club extends BaseEntity {
     @Max(31)
     private int payDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_url_id")
-    private ImageUrl imageUrl;
+    @Column(name = "image_url")
+    @Size(max = 500)
+    private String imageUrl;
 
     @Column(name = "club_fee")
     @Min(0)

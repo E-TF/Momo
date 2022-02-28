@@ -17,7 +17,7 @@ public class Consist extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 20)
+    @Column
     @Size(max = 20)
     @NotBlank
     private String role;

@@ -18,17 +18,17 @@ public class District {
     @Id
     private Long id;
 
-    @Column(length = 10)
+    @Column
     @Size(max = 10)
     @NotBlank
     private String state;
 
-    @Column(length = 10)
+    @Column
     @Size(max = 10)
     @NotBlank
     private String city;
 
-    @Column(length = 15)
+    @Column
     @Size(max = 15)
     @NotBlank
     private String district;

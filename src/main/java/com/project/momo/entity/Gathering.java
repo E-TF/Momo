@@ -19,12 +19,12 @@ public class Gathering extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 45)
+    @Column
     @Size(max = 45)
     @NotBlank
     private String name;
 
-    @Column(length = 20)
+    @Column
     @Size(max = 20)
     @NotBlank
     private String category;
@@ -33,7 +33,7 @@ public class Gathering extends BaseEntity {
     @NotNull
     private LocalDateTime gatherAt;
 
-    @Column(length = 45)
+    @Column
     @Size(max = 45)
     @NotBlank
     private String location;
