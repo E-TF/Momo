@@ -39,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login").permitAll()
+                .mvcMatchers(POST, "/api/s3/member/profile").hasAnyRole("TEMPORARY", "USER")
+                .mvcMatchers(POST, "/api/s3/club/profile").hasRole("USER")
                 .mvcMatchers(POST, "/api/members/signup").permitAll()
                 .mvcMatchers(POST, "/api/members/signup/oauth").hasRole("TEMPORARY")
                 .mvcMatchers(GET, "/api/members/loginid/duplicate").permitAll()
