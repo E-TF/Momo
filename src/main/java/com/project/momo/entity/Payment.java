@@ -50,7 +50,7 @@ public class Payment extends BaseEntity {
         payment.validityPeriod = validityPeriod;
         payment.password = password;
         payment.member = member;
-        payment.createdBy = member.getId();
+        payment.createdBy = member.getLoginId();
 
         return payment;
     }

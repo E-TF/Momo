@@ -18,7 +18,6 @@ public class Article extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String title;
@@ -27,7 +26,6 @@ public class Article extends BaseEntity {
     @NotBlank
     private String content;
 
-    @Column
     @Size(max = 20)
     @NotBlank
     private String category;

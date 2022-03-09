@@ -2,7 +2,9 @@ package com.project.momo.security.jwt;
 
 import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.security.consts.JwtConst;
+import com.project.momo.security.consts.OauthType;
 import com.project.momo.security.consts.TokenType;
+import com.project.momo.security.role.Role;
 import com.project.momo.service.AuthorizationService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
-import java.util.Collections;
 import java.util.Date;
 
 @Component
@@ -69,7 +70,10 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String jwt) {
         Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtConst.MEMBER_ID_CLAIM_NAME, Long.class);
-        return new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
+        if (memberId == null) {
+            return new UsernamePasswordAuthenticationToken(null, null, Role.getTemp());
+        }
+        return new UsernamePasswordAuthenticationToken(memberId, null, Role.getUser());
     }
 
     public boolean validate(String jwt) throws JwtException {

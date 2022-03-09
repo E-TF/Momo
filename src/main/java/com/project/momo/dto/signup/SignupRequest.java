@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class SignupForm {
+public class SignupRequest {
 
     @LoginId
     private String loginId;

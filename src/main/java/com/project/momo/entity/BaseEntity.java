@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @Column(name = "created_by", updatable = false)
-    protected long createdBy;
+    protected String createdBy;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

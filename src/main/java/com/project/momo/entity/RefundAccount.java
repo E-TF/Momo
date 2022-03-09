@@ -27,7 +27,6 @@ public class RefundAccount extends BaseEntity {
     @NotBlank
     private String accountNumber;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String holder;

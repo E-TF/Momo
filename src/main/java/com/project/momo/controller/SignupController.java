@@ -2,7 +2,8 @@ package com.project.momo.controller;
 
 import com.project.momo.common.annotation.LoginId;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.dto.signup.SignupForm;
+import com.project.momo.dto.signup.SignupOAuthRequest;
+import com.project.momo.dto.signup.SignupRequest;
 import com.project.momo.service.SignupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,16 +23,20 @@ public class SignupController {
     private final SignupService signupService;
 
     @PostMapping("/signup")
-    public void signup(@RequestBody @Valid SignupForm signupForm) {
-        signupService.signup(signupForm);
+    public void signup(@RequestBody @Valid SignupRequest signupRequest) {
+        signupService.signup(signupRequest);
     }
 
     @GetMapping("/loginid/duplicate")
     public ResponseEntity<Boolean> checkDuplicateLoginId(@RequestParam @LoginId String loginId) {
-        System.out.println(loginId);
         if (signupService.hasDuplicateLoginId(loginId))
             return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
         return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @PostMapping("/signup/oauth")
+    public void signupOAuth(@RequestBody @Valid SignupOAuthRequest signupOAuthRequest) {
+        signupService.signupOAuth(signupOAuthRequest);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

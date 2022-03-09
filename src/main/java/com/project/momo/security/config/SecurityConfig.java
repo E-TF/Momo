@@ -6,7 +6,6 @@ import com.project.momo.security.filter.LoginAuthenticationFilter;
 import com.project.momo.security.jwt.AuthenticationEntryPointImpl;
 import com.project.momo.security.jwt.LoginAuthenticationFailureHandler;
 import com.project.momo.security.jwt.LoginAuthenticationSuccessHandler;
-import com.project.momo.security.oauth.OAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
     private final LoginAuthenticationFilter loginAuthenticationFilter;
 
-    private final OAuth2UserServiceImpl oAuth2UserService;
     private final LoginAuthenticationSuccessHandler successHandler;
     private final LoginAuthenticationFailureHandler failureHandler;
 
@@ -41,8 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login").permitAll()
-                .mvcMatchers(POST, "/api/members/new").permitAll()
-                .mvcMatchers(GET, "/api/members/checkDuplicateLoginId").permitAll()
+                .mvcMatchers(POST, "/api/members/signup").permitAll()
+                .mvcMatchers(POST, "/api/members/signup/oauth").hasRole("TEMPORARY")
+                .mvcMatchers(GET, "/api/members/loginid/duplicate").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -51,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.oauth2Login()
                 .userInfoEndpoint()
-                .userService(oAuth2UserService)
                 .and()
                 .successHandler(successHandler).failureHandler(failureHandler);
 

@@ -18,12 +18,10 @@ public class ClubPointsHistory extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column
     @Size(max = 20)
     @NotBlank
     private String category;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String description;

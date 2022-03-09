@@ -18,7 +18,6 @@ public class Vote extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String title;

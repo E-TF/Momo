@@ -1,10 +1,12 @@
 package com.project.momo.service;
 
-import com.project.momo.dto.signup.SignupForm;
+import com.project.momo.dto.signup.SignupOAuthRequest;
+import com.project.momo.dto.signup.SignupRequest;
 import com.project.momo.entity.Member;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.repository.MemberRepository;
+import com.project.momo.security.consts.OauthType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,15 +21,28 @@ public class SignupService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(SignupForm signupForm) throws BusinessException {
-        checkDuplicateLoginId(signupForm.getLoginId());
+    public void signup(SignupRequest signupRequest) throws BusinessException {
+        checkDuplicateLoginId(signupRequest.getLoginId());
         Member member = Member.createMember(
-                signupForm.getLoginId(),
-                passwordEncoder.encode(signupForm.getPassword()),
-                signupForm.getName(),
-                signupForm.getEmail(),
-                signupForm.getPhoneNumber());
+                signupRequest.getLoginId(),
+                passwordEncoder.encode(signupRequest.getPassword()),
+                signupRequest.getName(),
+                signupRequest.getEmail(),
+                signupRequest.getPhoneNumber());
 
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void signupOAuth(SignupOAuthRequest signupOAuthRequest) {
+        Member member = Member.createOauth(
+                OauthType.get(signupOAuthRequest.getOauthType()),
+                signupOAuthRequest.getOauthId(),
+                signupOAuthRequest.getName(),
+                signupOAuthRequest.getEmail(),
+                signupOAuthRequest.getPhoneNumber(),
+                signupOAuthRequest.getImageUrl()
+        );
         memberRepository.save(member);
     }
 
@@ -41,4 +56,6 @@ public class SignupService {
     public boolean hasDuplicateLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
+
+
 }

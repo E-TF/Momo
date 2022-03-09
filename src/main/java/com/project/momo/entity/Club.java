@@ -20,12 +20,10 @@ public class Club extends BaseEntity {
     @NotBlank
     private String name;
 
-    @Column
     @Size(max = 1000)
     @NotBlank
     private String description;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String category;

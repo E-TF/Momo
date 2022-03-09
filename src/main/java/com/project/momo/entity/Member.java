@@ -13,6 +13,8 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class Member extends BaseEntity {
 
+    private static final String ANONYMOUS = "anonymous";
+
     @Id
     @GeneratedValue(generator = "SEQ_GENERATOR")
     private Long id;
@@ -24,7 +26,6 @@ public class Member extends BaseEntity {
     @Size(max = 255)
     private String password;
 
-    @Column
     @Size(max = 45)
     @NotBlank
     private String name;
@@ -55,16 +56,7 @@ public class Member extends BaseEntity {
     private OauthType oauthType;
 
     @Column(name = "oauth_id")
-    private long oauthId;
-
-    public void update(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    private Long oauthId;
 
     public static Member createMember(String loginId, String password, String name, String email, String phoneNumber) {
         Member member = new Member();
@@ -73,16 +65,20 @@ public class Member extends BaseEntity {
         member.name = name;
         member.email = email;
         member.phoneNumber = phoneNumber;
-        member.createdBy = member.getId();
+        member.createdBy = member.loginId;
         return member;
     }
 
-    public static Member ofOauth(OauthType oauthType, long oauthId, String name, String email) {
+    public static Member createOauth(OauthType oauthType, long oauthId, String name, String email, String phoneNumber, String imageUrl) {
         Member member = new Member();
         member.oauthType = oauthType;
         member.oauthId = oauthId;
         member.name = name;
         member.email = email;
+        member.phoneNumber = phoneNumber;
+        member.imageUrl = imageUrl;
+        member.createdBy = member.ANONYMOUS;
         return member;
     }
+
 }
