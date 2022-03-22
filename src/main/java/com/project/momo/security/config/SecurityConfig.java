@@ -4,6 +4,9 @@ import com.project.momo.security.filter.JwtExceptionFilter;
 import com.project.momo.security.filter.JwtFilter;
 import com.project.momo.security.filter.LoginAuthenticationFilter;
 import com.project.momo.security.jwt.AuthenticationEntryPointImpl;
+import com.project.momo.security.jwt.LoginAuthenticationFailureHandler;
+import com.project.momo.security.jwt.LoginAuthenticationSuccessHandler;
+import com.project.momo.security.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
     private final LoginAuthenticationFilter loginAuthenticationFilter;
 
+    private final LoginAuthenticationSuccessHandler successHandler;
+    private final LoginAuthenticationFailureHandler failureHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -35,12 +41,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login").permitAll()
                 .mvcMatchers(POST, "/api/members/signup").permitAll()
+                .mvcMatchers(POST, "/api/members/signup/oauth").hasRole(Role.TEMPORARY)
                 .mvcMatchers(GET, "/api/members/loginid/duplicate").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+
+        http.oauth2Login()
+                .userInfoEndpoint()
+                .and()
+                .successHandler(successHandler).failureHandler(failureHandler);
 
         http.addFilterAt(loginAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter, LoginAuthenticationFilter.class);

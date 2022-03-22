@@ -21,7 +21,6 @@ public class RefreshToken {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column
     @NotEmpty
     private String token;
 

@@ -20,12 +20,12 @@ public class Payment extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "company_name", length = 20)
+    @Column(name = "company_name")
     @Size(max = 20)
     @NotBlank
     private String companyName;
 
-    @Column(name = "card_number", length = 20)
+    @Column(name = "card_number")
     @Size(max = 20)
     @NotBlank
     private String cardNumber;

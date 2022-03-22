@@ -23,12 +23,10 @@ public class MemberPointsHistory extends BaseEntity {
     @NotNull
     private Member member;
 
-    @Column(length = 20)
     @Size(max = 20)
     @NotBlank
     private String category;
 
-    @Column(length = 45)
     @Size(max = 45)
     @NotBlank
     private String description;

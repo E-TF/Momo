@@ -17,17 +17,16 @@ public class RefundAccount extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "bank_name", length = 20)
+    @Column(name = "bank_name")
     @Size(max = 20)
     @NotBlank
     private String bankName;
 
-    @Column(name = "account_number", length = 20)
+    @Column(name = "account_number")
     @Size(max = 20)
     @NotBlank
     private String accountNumber;
 
-    @Column(length = 45)
     @Size(max = 45)
     @NotBlank
     private String holder;
