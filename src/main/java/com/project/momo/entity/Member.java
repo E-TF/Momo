@@ -56,7 +56,8 @@ public class Member extends BaseEntity {
     private OauthType oauthType;
 
     @Column(name = "oauth_id")
-    private Long oauthId;
+    @Size(max = 20)
+    private String oauthId;
 
     public static Member createMember(String loginId, String password, String name, String email, String phoneNumber) {
         Member member = new Member();
@@ -69,7 +70,7 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public static Member createOauth(OauthType oauthType, long oauthId, String name, String email, String phoneNumber, String imageUrl) {
+    public static Member createOauth(OauthType oauthType, String oauthId, String name, String email, String phoneNumber, String imageUrl) {
         Member member = new Member();
         member.oauthType = oauthType;
         member.oauthId = oauthId;

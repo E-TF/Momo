@@ -23,7 +23,7 @@ public class SignupOAuthRequest {
     @PhoneNumber
     private String phoneNumber;
 
-    private long oauthId;
+    private String oauthId;
 
     @OauthType
     private String oauthType;

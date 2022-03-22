@@ -11,7 +11,7 @@ public class GithubOAuthAttributes extends OAuthAttributes {
     private static final String IMAGE_URL = "avatar_url";
     private static final String USER_NAME_ATTRIBUTE_NAME = "id";
 
-    public GithubOAuthAttributes(long oAuthId, String name, String email, String imageUrl) {
+    public GithubOAuthAttributes(String oAuthId, String name, String email, String imageUrl) {
         super(OauthType.GITHUB, oAuthId, name, email, imageUrl);
     }
 
@@ -20,7 +20,7 @@ public class GithubOAuthAttributes extends OAuthAttributes {
         String email = (String) attributes.get(EMAIL);
         String imageUrl = (String) attributes.get(IMAGE_URL);
 
-        long oAuthId = Long.parseLong(String.valueOf(attributes.get(USER_NAME_ATTRIBUTE_NAME)));
+        String oAuthId = String.valueOf(attributes.get(USER_NAME_ATTRIBUTE_NAME));
 
         return new GithubOAuthAttributes(oAuthId, name, email, imageUrl);
     }
