@@ -3,16 +3,13 @@ package com.project.momo.security.jwt;
 import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.common.utils.AuthenticationTokenFactory;
 import com.project.momo.security.consts.JwtConst;
-import com.project.momo.security.consts.OauthType;
 import com.project.momo.security.consts.TokenType;
-import com.project.momo.security.role.Role;
 import com.project.momo.service.AuthorizationService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

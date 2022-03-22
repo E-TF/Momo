@@ -17,12 +17,12 @@ public class S3Controller {
     private final String MEMBER_PROFILE_DIRECTORY_NAME = "member-profile";
     private final String CLUB_PROFILE_DIRECTORY_NAME = "club-profile";
 
-    @PostMapping("/api/s3/member/profile")
+    @PostMapping("/api/member/profile/upload")
     public String uploadMemberProfile(@RequestParam("image") MultipartFile multipartFile) throws S3MultipartConversionException, DuplicatedFileNameException {
         return s3Uploader.upload(multipartFile, MEMBER_PROFILE_DIRECTORY_NAME);
     }
 
-    @PostMapping("/api/s3/club/profile")
+    @PostMapping("/api/club/profile/upload")
     public String uploadClubProfile(@RequestParam("image") MultipartFile multipartFile) throws S3MultipartConversionException, DuplicatedFileNameException {
         return s3Uploader.upload(multipartFile, CLUB_PROFILE_DIRECTORY_NAME);
     }
