@@ -1,6 +1,7 @@
 package com.project.momo.security.jwt;
 
 import com.project.momo.common.exception.auth.JwtException;
+import com.project.momo.common.utils.AuthenticationTokenFactory;
 import com.project.momo.security.consts.JwtConst;
 import com.project.momo.security.consts.OauthType;
 import com.project.momo.security.consts.TokenType;
@@ -71,9 +72,9 @@ public class TokenProvider {
     public Authentication getAuthentication(String jwt) {
         Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtConst.MEMBER_ID_CLAIM_NAME, Long.class);
         if (memberId == null) {
-            return new UsernamePasswordAuthenticationToken(null, null, Role.getTemp());
+            return AuthenticationTokenFactory.tempToken();
         }
-        return new UsernamePasswordAuthenticationToken(memberId, null, Role.getUser());
+        return AuthenticationTokenFactory.userToken(memberId);
     }
 
     public boolean validate(String jwt) throws JwtException {

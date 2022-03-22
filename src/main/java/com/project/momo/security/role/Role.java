@@ -4,27 +4,23 @@ import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @UtilityClass
 public class Role {
 
-    private static final List<GrantedAuthority> USER;
-    private static final List<GrantedAuthority> TEMP;
+    public static final String USER = "USER";
+    public static final String TEMPORARY = "TEMPORARY";
 
-    static {
-        USER = new ArrayList<>();
-        USER.add(new SimpleGrantedAuthority("ROLE_USER"));
-        TEMP = new ArrayList<>();
-        TEMP.add(new SimpleGrantedAuthority("ROLE_TEMPORARY"));
+    private static final List<GrantedAuthority> USER_ROLE = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    private static final List<GrantedAuthority> TEMPORARY_ROLE = Arrays.asList(new SimpleGrantedAuthority("ROLE_TEMPORARY"));
+
+    public static List<GrantedAuthority> getDefaultUserRole() {
+        return USER_ROLE;
     }
 
-    public static List<GrantedAuthority> getUser() {
-        return USER;
-    }
-
-    public static List<GrantedAuthority> getTemp() {
-        return TEMP;
+    public static List<GrantedAuthority> getDefaultTempRole() {
+        return TEMPORARY_ROLE;
     }
 }

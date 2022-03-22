@@ -6,6 +6,7 @@ import com.project.momo.security.filter.LoginAuthenticationFilter;
 import com.project.momo.security.jwt.AuthenticationEntryPointImpl;
 import com.project.momo.security.jwt.LoginAuthenticationFailureHandler;
 import com.project.momo.security.jwt.LoginAuthenticationSuccessHandler;
+import com.project.momo.security.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login").permitAll()
                 .mvcMatchers(POST, "/api/members/signup").permitAll()
-                .mvcMatchers(POST, "/api/members/signup/oauth").hasRole("TEMPORARY")
+                .mvcMatchers(POST, "/api/members/signup/oauth").hasRole(Role.TEMPORARY)
                 .mvcMatchers(GET, "/api/members/loginid/duplicate").permitAll()
                 .anyRequest().authenticated()
                 .and()
