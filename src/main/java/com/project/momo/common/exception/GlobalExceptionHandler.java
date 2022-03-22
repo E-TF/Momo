@@ -1,6 +1,8 @@
 package com.project.momo.common.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.momo.common.exception.s3.DuplicatedFileNameException;
+import com.project.momo.common.exception.s3.S3MultipartConversionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,5 +27,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleBusinessException(BusinessException exception) {
         ErrorCode code = exception.getErrorCode();
         return ResponseEntity.status(code.getHttpStatus()).body(new ErrorDto(code));
+    }
+
+    @ExceptionHandler(S3MultipartConversionException.class)
+    public ResponseEntity<ErrorDto> handleS3MultipartConversionException(S3MultipartConversionException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(exception));
+    }
+
+    @ExceptionHandler(DuplicatedFileNameException.class)
+    public ResponseEntity<ErrorDto> handleDuplicatedFileNameException(DuplicatedFileNameException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(exception));
     }
 }
