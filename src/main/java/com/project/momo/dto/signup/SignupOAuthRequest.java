@@ -1,9 +1,6 @@
 package com.project.momo.dto.signup;
 
-import com.project.momo.common.annotation.MemberEmail;
-import com.project.momo.common.annotation.MemberName;
-import com.project.momo.common.annotation.OauthType;
-import com.project.momo.common.annotation.PhoneNumber;
+import com.project.momo.common.annotation.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

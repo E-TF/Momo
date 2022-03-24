@@ -72,6 +72,7 @@ public class Member extends BaseEntity {
 
     public static Member createOauth(OauthType oauthType, String oauthId, String name, String email, String phoneNumber, String imageUrl) {
         Member member = new Member();
+        member.loginId = oauthType + oauthId;
         member.oauthType = oauthType;
         member.oauthId = oauthId;
         member.name = name;
@@ -82,4 +83,23 @@ public class Member extends BaseEntity {
         return member;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void increasePaymentCnt() {
+        this.paymentCnt++;
+    }
+
+    public void decreasePaymentCnt() {
+        this.paymentCnt--;
+    }
 }

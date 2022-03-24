@@ -12,7 +12,9 @@ public class GithubOAuthAttributes extends OAuthAttributes {
     private static final String USER_NAME_ATTRIBUTE_NAME = "id";
 
     public GithubOAuthAttributes(String oAuthId, String name, String email, String imageUrl) {
-        super(OauthType.GITHUB, oAuthId, name, email, imageUrl);
+        super(OauthType.GITHUB.getValue(), oAuthId, name, email, imageUrl);
+        System.out.println(OauthType.GITHUB.getValue());
+
     }
 
     public static GithubOAuthAttributes ofAttributes(Map<String, Object> attributes) {

@@ -9,6 +9,7 @@ public class OauthTypeValidator implements ConstraintValidator<com.project.momo.
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
         for (OauthType oauthType : OauthType.values()) {
             if(oauthType.getValue().equals(value)) return true;
         }
