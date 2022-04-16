@@ -1,14 +1,12 @@
 package com.project.momo.dto.member;
 
 import com.project.momo.entity.Member;
-import com.project.momo.entity.Payment;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberInfoResponse {
 
     private String loginId;
@@ -17,14 +15,18 @@ public class MemberInfoResponse {
     private String phoneNumber;
     private String imageUrl;
     private long points;
+    private int paymentCnt;
 
-    public MemberInfoResponse(Member member) {
-        this.loginId = member.getLoginId();
-        this.name = member.getName();
-        this.email = member.getEmail();
-        this.phoneNumber = member.getPhoneNumber();
-        this.imageUrl = member.getImageUrl();
-        this.points = member.getPoints();
+    public static MemberInfoResponse createMemberInfoResponse(Member member) {
+        MemberInfoResponse mir = new MemberInfoResponse();
+        mir.loginId = member.getLoginId();
+        mir.name = member.getName();
+        mir.email = member.getEmail();
+        mir.phoneNumber = member.getPhoneNumber();
+        mir.imageUrl = member.getImageUrl();
+        mir.points = member.getPoints();
+        mir.paymentCnt = member.getPaymentCnt();
 
+        return mir;
     }
 }

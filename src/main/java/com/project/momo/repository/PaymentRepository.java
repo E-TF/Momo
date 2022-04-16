@@ -10,4 +10,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
 
     List<Payment> findByMember(Member member);
+    void deleteAllByMember(Member member);
 }

@@ -1,5 +1,7 @@
 package com.project.momo.dto.payment;
 
+import com.project.momo.entity.Member;
+import com.project.momo.entity.Payment;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +16,8 @@ public class PaymentRequest {
     private String companyName;
     private String password;
     private LocalDate validityPeriod;
+
+    public Payment toPayment(Member member) {
+        return Payment.createPayment(companyName, cardNumber, validityPeriod, password, member);
+    }
 }

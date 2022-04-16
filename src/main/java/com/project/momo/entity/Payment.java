@@ -1,5 +1,7 @@
 package com.project.momo.entity;
 
+import com.project.momo.common.exception.BusinessException;
+import com.project.momo.common.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,5 +55,17 @@ public class Payment extends BaseEntity {
         payment.createdBy = member.getLoginId();
 
         return payment;
+    }
+
+    public void update(String companyName, String cardNumber, LocalDate validityPeriod) {
+        this.companyName = companyName;
+        this.cardNumber = cardNumber;
+        this.validityPeriod = validityPeriod;
+    }
+
+    public void checkMemberAuth(Member member) {
+        if (!member.getId().equals(this.member.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTHORIZATION);
+        }
     }
 }

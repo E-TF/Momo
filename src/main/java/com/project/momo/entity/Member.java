@@ -1,5 +1,7 @@
 package com.project.momo.entity;
 
+import com.project.momo.common.exception.BusinessException;
+import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.security.consts.OauthType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import javax.validation.constraints.*;
 public class Member extends BaseEntity {
 
     private static final String ANONYMOUS = "anonymous";
+    private static final short MAX_PAYMENT_CNT = 3;
 
     @Id
     @GeneratedValue(generator = "SEQ_GENERATOR")
@@ -83,16 +86,23 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public void setName(String name) {
+    public void updateName(String name) {
         this.name = name;
     }
 
-    public void setEmail(String email) {
+    public void updateEmail(String email) {
         this.email = email;
     }
 
-    public void setPassword(String password) {
+    public void updatePassword(String password) {
+        if (this.password.equals(password)) {
+            throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
+        }
         this.password = password;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void increasePaymentCnt() {
@@ -101,5 +111,16 @@ public class Member extends BaseEntity {
 
     public void decreasePaymentCnt() {
         this.paymentCnt--;
+    }
+
+    public void checkPassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
+        }
+    }
+
+    public void checkPaymentCnt() {
+        if (this.paymentCnt >= MAX_PAYMENT_CNT)
+            throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
     }
 }

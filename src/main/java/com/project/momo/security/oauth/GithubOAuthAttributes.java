@@ -13,15 +13,12 @@ public class GithubOAuthAttributes extends OAuthAttributes {
 
     public GithubOAuthAttributes(String oAuthId, String name, String email, String imageUrl) {
         super(OauthType.GITHUB.getValue(), oAuthId, name, email, imageUrl);
-        System.out.println(OauthType.GITHUB.getValue());
-
     }
 
     public static GithubOAuthAttributes ofAttributes(Map<String, Object> attributes) {
         String name = (String) attributes.get(NAME);
         String email = (String) attributes.get(EMAIL);
         String imageUrl = (String) attributes.get(IMAGE_URL);
-
         String oAuthId = String.valueOf(attributes.get(USER_NAME_ATTRIBUTE_NAME));
 
         return new GithubOAuthAttributes(oAuthId, name, email, imageUrl);

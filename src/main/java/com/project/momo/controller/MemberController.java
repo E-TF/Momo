@@ -2,11 +2,14 @@ package com.project.momo.controller;
 
 import com.project.momo.common.annotation.MemberEmail;
 import com.project.momo.common.annotation.MemberName;
+import com.project.momo.common.annotation.PhoneNumber;
 import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.dto.member.MemberInfoResponse;
 import com.project.momo.dto.member.PasswordUpdateRequest;
 import com.project.momo.dto.payment.PaymentRequest;
-import com.project.momo.entity.Payment;
+import com.project.momo.dto.payment.PaymentResponse;
+import com.project.momo.dto.payment.PaymentResponseList;
+import com.project.momo.entity.Member;
 import com.project.momo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
@@ -26,44 +28,74 @@ public class MemberController {
 
     @GetMapping("/my-info")
     public ResponseEntity<MemberInfoResponse> memberInfo() {
-        return ResponseEntity.ok().body(memberService.getMemberInfo());
+        Member member = memberService.getMemberById();
+        return ResponseEntity.ok().body(memberService.getMemberInfo(member));
     }
 
-    @PutMapping("/name")
+    @GetMapping("/payments/check")
+    public ResponseEntity<?> checkPaymentCnt() {
+        Member member = memberService.getMemberById();
+        member.checkPaymentCnt();
+        return ResponseEntity.ok().body(true);
+    }
+
+    @GetMapping("/payments")
+    public ResponseEntity<PaymentResponseList> getPayments() {
+        PaymentResponseList payments = memberService.getPaymentsList();
+        return ResponseEntity.ok().body(payments);
+    }
+
+    @GetMapping("/payment/{paymentId}")
+    public ResponseEntity<PaymentResponse> getPayment(@PathVariable long paymentId) {
+        PaymentResponse paymentResponse = memberService.getPaymentResponse(paymentId);
+        return ResponseEntity.ok().body(paymentResponse);
+    }
+
+    @PatchMapping("/name")
     public ResponseEntity<MemberInfoResponse> updateName(@RequestParam @MemberName String name) {
         MemberInfoResponse memberInfoResponse = memberService.updateName(name);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
-    @PutMapping("/email")
+    @PatchMapping("/email")
     public ResponseEntity<MemberInfoResponse> updateEmail(@RequestParam @MemberEmail String email) {
         MemberInfoResponse memberInfoResponse = memberService.updateEmail(email);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
-    @PutMapping("/password")
+    @PatchMapping("/password")
     public ResponseEntity<MemberInfoResponse> updatePassword(@RequestBody @Valid PasswordUpdateRequest passwordUpdateRequest) {
         MemberInfoResponse memberInfoResponse = memberService.updatePassword(passwordUpdateRequest);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
-    @GetMapping("/payments/check")
-    public ResponseEntity<Boolean> checkPaymentCnt() {
-        memberService.checkPayment();
-        return ResponseEntity.ok().body(true);
+    @PatchMapping("/phone-number")
+    public ResponseEntity<MemberInfoResponse> updatePhoneNumber(@RequestBody @PhoneNumber String phoneNumber) {
+        MemberInfoResponse memberInfoResponse = memberService.updatePhoneNumber(phoneNumber);
+        return ResponseEntity.ok(memberInfoResponse);
     }
 
-    @GetMapping("/payments")
-    public ResponseEntity<List<Payment>> getPayments() {
-        List<Payment> payments = memberService.getPaymentsList();
-        return ResponseEntity.ok().body(payments);  //TODO 여기를 boolean 타입으로 반환해도 괜찮을까?
+    @PutMapping("/payment/{paymentId}")
+    public ResponseEntity<MemberInfoResponse> updatePayment(@PathVariable long paymentId, @RequestBody PaymentRequest paymentRequest) {
+        MemberInfoResponse memberInfoResponse = memberService.updatePayment(paymentId, paymentRequest);
+        return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<MemberInfoResponse> addPayment(@RequestBody @Valid PaymentRequest paymentRequest) {
+    public ResponseEntity<MemberInfoResponse> addPayment(@RequestBody PaymentRequest paymentRequest) {
         MemberInfoResponse memberInfoResponse = memberService.addPayment(paymentRequest);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
-//    @DeleteMapping("/password/{}")
+    @DeleteMapping("/payment/{paymentId}")
+    public ResponseEntity<MemberInfoResponse> deletePayment(@PathVariable long paymentId) {
+        MemberInfoResponse memberInfoResponse = memberService.deletePayment(paymentId);
+        return ResponseEntity.ok(memberInfoResponse);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteAccount() {
+        memberService.deleteAccount();
+        return ResponseEntity.noContent().build();
+    }
 }
