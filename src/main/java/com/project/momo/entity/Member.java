@@ -1,8 +1,7 @@
 package com.project.momo.entity;
 
-import com.project.momo.common.exception.BusinessException;
-import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.security.consts.OauthType;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,11 +11,10 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "MEMBER")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     private static final String ANONYMOUS = "anonymous";
-    private static final short MAX_PAYMENT_CNT = 3;
 
     @Id
     @GeneratedValue(generator = "SEQ_GENERATOR")
@@ -95,9 +93,6 @@ public class Member extends BaseEntity {
     }
 
     public void updatePassword(String password) {
-        if (this.password.equals(password)) {
-            throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
-        }
         this.password = password;
     }
 
@@ -111,16 +106,5 @@ public class Member extends BaseEntity {
 
     public void decreasePaymentCnt() {
         this.paymentCnt--;
-    }
-
-    public void checkPassword(String password) {
-        if (!this.password.equals(password)) {
-            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
-        }
-    }
-
-    public void checkPaymentCnt() {
-        if (this.paymentCnt >= MAX_PAYMENT_CNT)
-            throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
     }
 }

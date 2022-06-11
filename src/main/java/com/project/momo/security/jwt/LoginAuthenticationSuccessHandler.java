@@ -38,7 +38,7 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         if (authentication instanceof OAuth2AuthenticationToken) {  //oauth 로그인
             OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
             try {
-                OauthType oauthType = OauthType.get(oauthToken.getAuthorizedClientRegistrationId());
+                OauthType oauthType = OauthType.toOauthType(oauthToken.getAuthorizedClientRegistrationId());
                 String oauthId = authentication.getName();
                 Optional<Member> optionalMember = memberRepository.findByOauthTypeAndOauthId(oauthType, oauthId);
 

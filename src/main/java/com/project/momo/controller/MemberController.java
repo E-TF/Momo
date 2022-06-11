@@ -3,7 +3,6 @@ package com.project.momo.controller;
 import com.project.momo.common.annotation.MemberEmail;
 import com.project.momo.common.annotation.MemberName;
 import com.project.momo.common.annotation.PhoneNumber;
-import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.dto.member.MemberInfoResponse;
 import com.project.momo.dto.member.PasswordUpdateRequest;
 import com.project.momo.dto.payment.PaymentRequest;
@@ -29,14 +28,12 @@ public class MemberController {
     @GetMapping("/my-info")
     public ResponseEntity<MemberInfoResponse> memberInfo() {
         Member member = memberService.getMemberById();
-        return ResponseEntity.ok().body(memberService.getMemberInfo(member));
+        return ResponseEntity.ok().body(MemberInfoResponse.createMemberInfoResponse(member));
     }
 
     @GetMapping("/payments/check")
-    public ResponseEntity<?> checkPaymentCnt() {
-        Member member = memberService.getMemberById();
-        member.checkPaymentCnt();
-        return ResponseEntity.ok().body(true);
+    public void checkPaymentCnt() {
+        memberService.checkPaymentCnt(memberService.getMemberById());
     }
 
     @GetMapping("/payments")
@@ -47,7 +44,7 @@ public class MemberController {
 
     @GetMapping("/payment/{paymentId}")
     public ResponseEntity<PaymentResponse> getPayment(@PathVariable long paymentId) {
-        PaymentResponse paymentResponse = memberService.getPaymentResponse(paymentId);
+        PaymentResponse paymentResponse = memberService.getPayment(paymentId);
         return ResponseEntity.ok().body(paymentResponse);
     }
 
@@ -93,7 +90,7 @@ public class MemberController {
         return ResponseEntity.ok(memberInfoResponse);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     public ResponseEntity<?> deleteAccount() {
         memberService.deleteAccount();
         return ResponseEntity.noContent().build();

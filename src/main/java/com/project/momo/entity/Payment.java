@@ -57,15 +57,9 @@ public class Payment extends BaseEntity {
         return payment;
     }
 
-    public void update(String companyName, String cardNumber, LocalDate validityPeriod) {
+    public void updatePayment(String companyName, String cardNumber, LocalDate validityPeriod) {
         this.companyName = companyName;
         this.cardNumber = cardNumber;
         this.validityPeriod = validityPeriod;
-    }
-
-    public void checkMemberAuth(Member member) {
-        if (!member.getId().equals(this.member.getId())) {
-            throw new BusinessException(ErrorCode.NO_AUTHORIZATION);
-        }
     }
 }

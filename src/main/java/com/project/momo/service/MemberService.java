@@ -25,6 +25,8 @@ public class MemberService {
     private final PaymentRepository paymentRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private static final short MAX_PAYMENT_CNT = 3;
+
     @Transactional(readOnly = true)
     public Member getMemberById() {
         return memberRepository
@@ -40,14 +42,10 @@ public class MemberService {
                 .orElseThrow(()->{throw new BusinessException(ErrorCode.NO_PAYMENT_FOUND);});
     }
 
-    @Transactional(readOnly = true)
-    public MemberInfoResponse getMemberInfo(Member member) {
-        return MemberInfoResponse.createMemberInfoResponse(member);
-    }
-
-    public PaymentResponse getPaymentResponse(long paymentId) {
+    public PaymentResponse getPayment(long paymentId) {
+        Member member = getMemberById();
         Payment payment = getPaymentById(paymentId);
-        payment.checkMemberAuth(getMemberById());
+        checkAuthForPayment(member, payment);
 
         return PaymentResponse.createPaymentResponse(payment);
     }
@@ -55,7 +53,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public PaymentResponseList getPaymentsList() {
         Member member = getMemberById();
-        return PaymentResponseList.createPaymentResponseList(paymentRepository.findByMember(member));
+        return PaymentResponseList.createPaymentResponseList(paymentRepository.findAllByMember(member));
     }
 
     @Transactional
@@ -69,7 +67,6 @@ public class MemberService {
     public MemberInfoResponse updateEmail(String email) {
         Member member = getMemberById();
         member.updateEmail(email);
-
         return MemberInfoResponse.createMemberInfoResponse(member);
     }
 
@@ -83,7 +80,9 @@ public class MemberService {
     @Transactional
     public MemberInfoResponse updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
         Member member = getMemberById();
-        member.checkPassword(passwordEncoder.encode(passwordUpdateRequest.getCurPassword()));
+
+        checkPasswordMatch(member, passwordUpdateRequest.getCurPassword());
+        checkPasswordDuplicate(member, passwordUpdateRequest.getNewPassword());
         member.updatePassword(passwordEncoder.encode(passwordUpdateRequest.getNewPassword()));
 
         return MemberInfoResponse.createMemberInfoResponse(member);
@@ -92,7 +91,7 @@ public class MemberService {
     public MemberInfoResponse updatePayment(long paymentId, PaymentRequest paymentRequest) {
         Member member = getMemberById();
         Payment payment = getPaymentById(paymentId);
-        payment.update(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
+        payment.updatePayment(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
 
         return MemberInfoResponse.createMemberInfoResponse(member);
     }
@@ -100,7 +99,7 @@ public class MemberService {
     @Transactional
     public MemberInfoResponse addPayment(PaymentRequest paymentRequest) {
         Member member = getMemberById();
-        member.checkPaymentCnt();
+        checkPaymentCnt(member);
 
         Payment payment = paymentRequest.toPayment(member);
         member.increasePaymentCnt();
@@ -113,7 +112,7 @@ public class MemberService {
     public MemberInfoResponse deletePayment(long paymentId) {
         Payment payment = getPaymentById(paymentId);
         Member member = getMemberById();
-        payment.checkMemberAuth(member);
+        checkAuthForPayment(member, payment);
 
         paymentRepository.deleteById(paymentId);
         member.decreasePaymentCnt();
@@ -126,5 +125,26 @@ public class MemberService {
         Member member = getMemberById();
         memberRepository.deleteById(member.getId());
         paymentRepository.deleteAllByMember(member);
+    }
+
+    private void checkPasswordMatch(Member member, String password){
+        if(!passwordEncoder.encode(password).equals(member.getPassword()))
+            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
+    }
+
+    private void checkPasswordDuplicate(Member member, String password) {
+        if (passwordEncoder.encode(member.getPassword()).equals(password)) {
+            throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
+        }
+    }
+
+    public void checkPaymentCnt(Member member){
+        if (member.getPaymentCnt() >= MAX_PAYMENT_CNT)
+            throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
+    }
+
+    private void checkAuthForPayment(Member member, Payment payment){
+        if(member.getId()!=payment.getMember().getId())
+            throw new BusinessException(ErrorCode.NO_AUTHORIZATION);
     }
 }

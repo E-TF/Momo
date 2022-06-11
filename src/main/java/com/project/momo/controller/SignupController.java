@@ -27,16 +27,15 @@ public class SignupController {
         signupService.signup(signupRequest);
     }
 
-    @GetMapping("/loginid/duplicate")
-    public ResponseEntity<Boolean> checkDuplicateLoginId(@RequestParam @LoginId String loginId) {
-        if (signupService.hasDuplicateLoginId(loginId))
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
-        return ResponseEntity.status(HttpStatus.OK).body(true);
-    }
-
     @PostMapping("/signup/oauth")
     public void signupOAuth(@RequestBody @Valid SignupOAuthRequest signupOAuthRequest) {
-        signupService.signupOAuth(signupOAuthRequest);
+        signupService.signupOAuth(SignupOAuthRequest.toSignupOAuthDetails(signupOAuthRequest));
+    }
+
+    @GetMapping("/loginid/duplicate")
+    public ResponseEntity<?> checkDuplicateLoginId(@RequestParam @LoginId String loginId) {
+        signupService.checkDuplicateLoginId(loginId);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
