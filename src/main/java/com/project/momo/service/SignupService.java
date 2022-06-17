@@ -1,9 +1,7 @@
 package com.project.momo.service;
 
 import com.project.momo.dto.signup.SignupOAuthDetails;
-import com.project.momo.dto.signup.SignupOAuthRequest;
 import com.project.momo.dto.signup.SignupRequest;
-import com.project.momo.entity.Member;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.repository.MemberRepository;

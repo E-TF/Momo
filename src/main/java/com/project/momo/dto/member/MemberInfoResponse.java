@@ -17,16 +17,13 @@ public class MemberInfoResponse {
     private long points;
     private int paymentCnt;
 
-    public static MemberInfoResponse createMemberInfoResponse(Member member) {
-        MemberInfoResponse mir = new MemberInfoResponse();
-        mir.loginId = member.getLoginId();
-        mir.name = member.getName();
-        mir.email = member.getEmail();
-        mir.phoneNumber = member.getPhoneNumber();
-        mir.imageUrl = member.getImageUrl();
-        mir.points = member.getPoints();
-        mir.paymentCnt = member.getPaymentCnt();
-
-        return mir;
+    public MemberInfoResponse(Member member){
+        this.loginId = member.getLoginId();
+        this.name = member.getName();
+        this.email = member.getEmail();
+        this.phoneNumber = member.getPhoneNumber();
+        this.imageUrl = member.getImageUrl();
+        this.points = member.getPoints();
+        this.paymentCnt = member.getPaymentCnt();
     }
 }

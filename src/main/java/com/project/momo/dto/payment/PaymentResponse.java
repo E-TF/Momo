@@ -15,14 +15,11 @@ public class PaymentResponse {
     private String cardNumber;
     private LocalDate validityPeriod;
 
-    public static PaymentResponse createPaymentResponse(Payment payment) {
-        PaymentResponse paymentResponse = new PaymentResponse();
-
-        paymentResponse.id = payment.getId();
-        paymentResponse.companyName = payment.getCompanyName();
-        paymentResponse.cardNumber = payment.getCardNumber();
-        paymentResponse.validityPeriod = payment.getValidityPeriod();
-        return paymentResponse;
+    public PaymentResponse(Payment payment){
+        this.id = payment.getId();
+        this.companyName = payment.getCompanyName();
+        this.cardNumber = payment.getCardNumber();
+        this.validityPeriod = payment.getValidityPeriod();
     }
 
 }

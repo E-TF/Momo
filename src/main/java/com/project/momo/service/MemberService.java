@@ -7,7 +7,7 @@ import com.project.momo.dto.member.MemberInfoResponse;
 import com.project.momo.dto.member.PasswordUpdateRequest;
 import com.project.momo.dto.payment.PaymentRequest;
 import com.project.momo.dto.payment.PaymentResponse;
-import com.project.momo.dto.payment.PaymentResponseList;
+import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.entity.Member;
 import com.project.momo.entity.Payment;
 import com.project.momo.repository.MemberRepository;
@@ -31,73 +31,77 @@ public class MemberService {
     public Member getMemberById() {
         return memberRepository
                 .findById(AuthUtils.getMemberId())
-                .orElseThrow(() -> {throw new BusinessException(ErrorCode.NO_MEMBER_FOUND);});
+                .orElseThrow(() -> {throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);});
     }
 
     @Transactional(readOnly = true)
     public Payment getPaymentById(long paymentId) {
-
         return paymentRepository
                 .findById(paymentId)
                 .orElseThrow(()->{throw new BusinessException(ErrorCode.NO_PAYMENT_FOUND);});
     }
 
-    public PaymentResponse getPayment(long paymentId) {
+    public MemberInfoResponse inquireMyAccountInfo(){
+        Member member = getMemberById();
+        return new MemberInfoResponse(member);
+    }
+
+    public PaymentResponse inquireMyPaymentInfo(long paymentId) {
         Member member = getMemberById();
         Payment payment = getPaymentById(paymentId);
         checkAuthForPayment(member, payment);
 
-        return PaymentResponse.createPaymentResponse(payment);
+        return new PaymentResponse(payment);
     }
 
     @Transactional(readOnly = true)
-    public PaymentResponseList getPaymentsList() {
+    public PaymentListResponse inquireAllMyPaymentsInfo() {
         Member member = getMemberById();
-        return PaymentResponseList.createPaymentResponseList(paymentRepository.findAllByMember(member));
+        return PaymentListResponse.createPaymentResponseList(paymentRepository.findAllByMember(member));
     }
 
     @Transactional
-    public MemberInfoResponse updateName(String name) {
+    public MemberInfoResponse changeMyAccountName(String name) {
         Member member = getMemberById();
         member.updateName(name);
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse updateEmail(String email) {
+    public MemberInfoResponse changeMyAccountEmail(String email) {
         Member member = getMemberById();
         member.updateEmail(email);
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse updatePhoneNumber(String phoneNumber) {
+    public MemberInfoResponse changeMyAccountPhoneNumber(String phoneNumber) {
         Member member = getMemberById();
         member.updatePhoneNumber(phoneNumber);
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
+    public MemberInfoResponse changeMyAccountPassword(PasswordUpdateRequest passwordUpdateRequest) {
         Member member = getMemberById();
 
         checkPasswordMatch(member, passwordUpdateRequest.getCurPassword());
         checkPasswordDuplicate(member, passwordUpdateRequest.getNewPassword());
         member.updatePassword(passwordEncoder.encode(passwordUpdateRequest.getNewPassword()));
 
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
-    public MemberInfoResponse updatePayment(long paymentId, PaymentRequest paymentRequest) {
+    public MemberInfoResponse changeMyAccountPayment(long paymentId, PaymentRequest paymentRequest) {
         Member member = getMemberById();
         Payment payment = getPaymentById(paymentId);
         payment.updatePayment(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
 
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse addPayment(PaymentRequest paymentRequest) {
+    public MemberInfoResponse registerNewPayment(PaymentRequest paymentRequest) {
         Member member = getMemberById();
         checkPaymentCnt(member);
 
@@ -105,11 +109,11 @@ public class MemberService {
         member.increasePaymentCnt();
 
         paymentRepository.save(payment);
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse deletePayment(long paymentId) {
+    public MemberInfoResponse removeMyPayment(long paymentId) {
         Payment payment = getPaymentById(paymentId);
         Member member = getMemberById();
         checkAuthForPayment(member, payment);
@@ -117,11 +121,11 @@ public class MemberService {
         paymentRepository.deleteById(paymentId);
         member.decreasePaymentCnt();
 
-        return MemberInfoResponse.createMemberInfoResponse(member);
+        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public void deleteAccount() {
+    public void withdraw() {
         Member member = getMemberById();
         memberRepository.deleteById(member.getId());
         paymentRepository.deleteAllByMember(member);

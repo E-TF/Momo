@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class OAuthAttributes {
 
-    private String oauthType;
+    private OauthType oauthType;
 
     private String oauthId;
 

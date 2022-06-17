@@ -12,7 +12,7 @@ public enum ErrorCode {
     INVALID_LOGIN_ID(HttpStatus.BAD_REQUEST, "아이디는 크기가 3에서 45 사이여야 합니다"),
 
     //MyPage, MemberService
-    NO_MEMBER_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
     EXCEED_PAYMENT_CNT_LIMIT(HttpStatus.BAD_REQUEST, "결제 수단은 최대 3개까지 등록이 가능합니다."),
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
     DUPLICATED_PASSWORD(HttpStatus.BAD_REQUEST, "기존 비밀번호와 동일힙니다."),
