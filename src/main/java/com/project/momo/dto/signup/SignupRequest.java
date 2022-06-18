@@ -26,7 +26,11 @@ public class SignupRequest {
     @PhoneNumber
     private String phoneNumber;
 
-    public Member toMember(PasswordEncoder passwordEncoder){
-        return Member.createMember(loginId, passwordEncoder.encode(password), name, email, phoneNumber);
+    public Member toMember(){
+        return Member.createMember(loginId, password, name, email, phoneNumber);
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 }

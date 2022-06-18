@@ -13,6 +13,7 @@ import com.project.momo.entity.Payment;
 import com.project.momo.repository.MemberRepository;
 import com.project.momo.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,8 @@ public class MemberService {
     private final PaymentRepository paymentRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private static final short MAX_PAYMENT_CNT = 3;
+    @Value("${service.member.max-payment-count}")
+    private static short MAX_PAYMENT_CNT;
 
     @Transactional(readOnly = true)
     public Member getMemberById() {
@@ -57,7 +59,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public PaymentListResponse inquireAllMyPaymentsInfo() {
         Member member = getMemberById();
-        return PaymentListResponse.createPaymentResponseList(paymentRepository.findAllByMember(member));
+        return new PaymentListResponse(paymentRepository.findAllByMember(member));
     }
 
     @Transactional

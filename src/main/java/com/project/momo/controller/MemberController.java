@@ -35,61 +35,61 @@ public class MemberController {
     }
 
     @GetMapping("/payments")
-    public ResponseEntity<PaymentListResponse> getPayments() {
+    public ResponseEntity<PaymentListResponse> inquireAllMyPaymentsInfo() {
         PaymentListResponse payments = memberService.inquireAllMyPaymentsInfo();
         return ResponseEntity.ok().body(payments);
     }
 
     @GetMapping("/payment/{paymentId}")
-    public ResponseEntity<PaymentResponse> getPayment(@PathVariable long paymentId) {
+    public ResponseEntity<PaymentResponse> inquireMyPaymentInfo(@PathVariable long paymentId) {
         PaymentResponse paymentResponse = memberService.inquireMyPaymentInfo(paymentId);
         return ResponseEntity.ok().body(paymentResponse);
     }
 
     @PatchMapping("/name")
-    public ResponseEntity<MemberInfoResponse> updateName(@RequestParam @MemberName String name) {
+    public ResponseEntity<MemberInfoResponse> changeMyAccountName(@RequestParam @MemberName String name) {
         MemberInfoResponse memberInfoResponse = memberService.changeMyAccountName(name);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PatchMapping("/email")
-    public ResponseEntity<MemberInfoResponse> updateEmail(@RequestParam @MemberEmail String email) {
+    public ResponseEntity<MemberInfoResponse> changeMyAccountEmail(@RequestParam @MemberEmail String email) {
         MemberInfoResponse memberInfoResponse = memberService.changeMyAccountEmail(email);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<MemberInfoResponse> updatePassword(@RequestBody @Valid PasswordUpdateRequest passwordUpdateRequest) {
+    public ResponseEntity<MemberInfoResponse> changeMyAccountPassword(@RequestBody @Valid PasswordUpdateRequest passwordUpdateRequest) {
         MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPassword(passwordUpdateRequest);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PatchMapping("/phone-number")
-    public ResponseEntity<MemberInfoResponse> updatePhoneNumber(@RequestBody @PhoneNumber String phoneNumber) {
+    public ResponseEntity<MemberInfoResponse> changeMyAccountPhoneNumber(@RequestBody @PhoneNumber String phoneNumber) {
         MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPhoneNumber(phoneNumber);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PutMapping("/payment/{paymentId}")
-    public ResponseEntity<MemberInfoResponse> updatePayment(@PathVariable long paymentId, @RequestBody PaymentRequest paymentRequest) {
+    public ResponseEntity<MemberInfoResponse> changeMyAccountPayment(@PathVariable long paymentId, @RequestBody PaymentRequest paymentRequest) {
         MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPayment(paymentId, paymentRequest);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<MemberInfoResponse> addPayment(@RequestBody PaymentRequest paymentRequest) {
+    public ResponseEntity<MemberInfoResponse> registerNewPayment(@RequestBody PaymentRequest paymentRequest) {
         MemberInfoResponse memberInfoResponse = memberService.registerNewPayment(paymentRequest);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @DeleteMapping("/payment/{paymentId}")
-    public ResponseEntity<MemberInfoResponse> deletePayment(@PathVariable long paymentId) {
+    public ResponseEntity<MemberInfoResponse> removeMyPayment(@PathVariable long paymentId) {
         MemberInfoResponse memberInfoResponse = memberService.removeMyPayment(paymentId);
         return ResponseEntity.ok(memberInfoResponse);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAccount() {
+    public ResponseEntity<?> withdraw() {
         memberService.withdraw();
         return ResponseEntity.noContent().build();
     }

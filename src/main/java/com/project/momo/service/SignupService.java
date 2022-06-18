@@ -21,7 +21,8 @@ public class SignupService {
     @Transactional
     public void signup(SignupRequest signupRequest) throws BusinessException {
         checkDuplicateLoginId(signupRequest.getLoginId());
-        memberRepository.save(signupRequest.toMember(passwordEncoder));
+        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        memberRepository.save(signupRequest.toMember());
     }
 
     @Transactional
