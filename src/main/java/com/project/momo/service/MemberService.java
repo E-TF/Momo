@@ -59,7 +59,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public PaymentListResponse inquireAllMyPaymentsInfo() {
         Member member = getMemberById();
-        return new PaymentListResponse(paymentRepository.findAllByMember(member));
+        return new PaymentListResponse(paymentRepository.findAllByMemberId(member.getId()));
     }
 
     @Transactional
@@ -150,7 +150,7 @@ public class MemberService {
     }
 
     private void checkAuthForPayment(Member member, Payment payment){
-        if(member.getId()!=payment.getMember().getId())
+        if(!member.getId().equals(payment.getMember().getId()))
             throw new BusinessException(ErrorCode.NO_AUTHORIZATION);
     }
 }
