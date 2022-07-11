@@ -1,13 +1,10 @@
 package com.project.momo.controller;
 
-import com.project.momo.common.annotation.MemberEmail;
-import com.project.momo.common.annotation.MemberName;
-import com.project.momo.common.annotation.PhoneNumber;
-import com.project.momo.dto.member.MemberInfoResponse;
-import com.project.momo.dto.member.PasswordUpdateRequest;
+import com.project.momo.common.utils.AuthUtils;
+import com.project.momo.dto.member.*;
+import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.dto.payment.PaymentRequest;
 import com.project.momo.dto.payment.PaymentResponse;
-import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,71 +23,82 @@ public class MemberController {
 
     @GetMapping("/my-info")
     public ResponseEntity<MemberInfoResponse> inquireMyAccountInfo() {
-        return ResponseEntity.ok().body(memberService.inquireMyAccountInfo());
+        return ResponseEntity.ok().body(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @GetMapping("/payments/check")
-    public void checkPaymentCnt() {
-        memberService.checkPaymentCnt(memberService.getMemberById());
-    }
-
-    @GetMapping("/payments")
-    public ResponseEntity<PaymentListResponse> inquireAllMyPaymentsInfo() {
-        PaymentListResponse payments = memberService.inquireAllMyPaymentsInfo();
-        return ResponseEntity.ok().body(payments);
+    public ResponseEntity<?> checkPaymentCnt() {
+        memberService.checkPaymentCntOverMaxLimit(getCurrentMemberId());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/payment/{paymentId}")
     public ResponseEntity<PaymentResponse> inquireMyPaymentInfo(@PathVariable long paymentId) {
-        PaymentResponse paymentResponse = memberService.inquireMyPaymentInfo(paymentId);
-        return ResponseEntity.ok().body(paymentResponse);
+        return ResponseEntity.ok().body(memberService.inquireMyPaymentInfo(getCurrentMemberId(), paymentId));
+    }
+
+    @GetMapping("/payments")
+    public ResponseEntity<PaymentListResponse> inquireAllMyPaymentsInfo() {
+        return ResponseEntity.ok().body(memberService.inquireAllMyPaymentsInfo(getCurrentMemberId()));
+    }
+
+    @PutMapping("/password/verify")
+    public ResponseEntity<?> verifyPasswordToUpdatePassword(@RequestBody MemberPasswordVerifyRequest memberPasswordVerifyRequest) {
+        memberService.verifyPasswordBeforeUpdate(getCurrentMemberId(), memberPasswordVerifyRequest.getPassword());
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/name")
-    public ResponseEntity<MemberInfoResponse> changeMyAccountName(@RequestParam @MemberName String name) {
-        MemberInfoResponse memberInfoResponse = memberService.changeMyAccountName(name);
-        return ResponseEntity.ok(memberInfoResponse);
+    public ResponseEntity<MemberInfoResponse> changeMyAccountName(@RequestBody @Valid MemberNameUpdateRequest memberNameUpdateRequest) {
+        memberService.changeMyAccountName(getCurrentMemberId(), memberNameUpdateRequest.getName());
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @PatchMapping("/email")
-    public ResponseEntity<MemberInfoResponse> changeMyAccountEmail(@RequestParam @MemberEmail String email) {
-        MemberInfoResponse memberInfoResponse = memberService.changeMyAccountEmail(email);
-        return ResponseEntity.ok(memberInfoResponse);
+    public ResponseEntity<MemberInfoResponse> changeMyAccountEmail(@RequestBody @Valid MemberEmailUpdateRequest memberEmailUpdateRequest) {
+        memberService.changeMyAccountEmail(getCurrentMemberId(), memberEmailUpdateRequest.getEmail());
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<MemberInfoResponse> changeMyAccountPassword(@RequestBody @Valid PasswordUpdateRequest passwordUpdateRequest) {
-        MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPassword(passwordUpdateRequest);
-        return ResponseEntity.ok(memberInfoResponse);
+    public ResponseEntity<MemberInfoResponse> changeMyAccountPassword(@RequestBody @Valid MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
+        memberService.changeMyAccountPassword(getCurrentMemberId(), memberPasswordUpdateRequest.getPassword());
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @PatchMapping("/phone-number")
-    public ResponseEntity<MemberInfoResponse> changeMyAccountPhoneNumber(@RequestBody @PhoneNumber String phoneNumber) {
-        MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPhoneNumber(phoneNumber);
-        return ResponseEntity.ok(memberInfoResponse);
+    public ResponseEntity<MemberInfoResponse> changeMyAccountPhoneNumber(@RequestBody @Valid MemberPhoneNumberUpdateRequest memberPhoneNumberUpdateRequest) {
+        memberService.changeMyAccountPhoneNumber(getCurrentMemberId(), memberPhoneNumberUpdateRequest.getPhoneNumber());
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @PutMapping("/payment/{paymentId}")
     public ResponseEntity<MemberInfoResponse> changeMyAccountPayment(@PathVariable long paymentId, @RequestBody PaymentRequest paymentRequest) {
-        MemberInfoResponse memberInfoResponse = memberService.changeMyAccountPayment(paymentId, paymentRequest);
-        return ResponseEntity.ok(memberInfoResponse);
+        memberService.changeMyAccountPayment(getCurrentMemberId(), paymentId, paymentRequest);
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(getCurrentMemberId()));
     }
 
     @PostMapping("/payments")
     public ResponseEntity<MemberInfoResponse> registerNewPayment(@RequestBody PaymentRequest paymentRequest) {
-        MemberInfoResponse memberInfoResponse = memberService.registerNewPayment(paymentRequest);
-        return ResponseEntity.ok(memberInfoResponse);
+        long memberId = getCurrentMemberId();
+        memberService.registerNewPayment(memberId, paymentRequest);
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(memberId));
     }
 
     @DeleteMapping("/payment/{paymentId}")
     public ResponseEntity<MemberInfoResponse> removeMyPayment(@PathVariable long paymentId) {
-        MemberInfoResponse memberInfoResponse = memberService.removeMyPayment(paymentId);
-        return ResponseEntity.ok(memberInfoResponse);
+        long memberId = getCurrentMemberId();
+        memberService.removeMyPayment(memberId, paymentId);
+        return ResponseEntity.ok(memberService.inquireMyAccountInfo(memberId));
     }
 
     @DeleteMapping
     public ResponseEntity<?> withdraw() {
-        memberService.withdraw();
+        memberService.withdraw(getCurrentMemberId());
         return ResponseEntity.noContent().build();
+    }
+
+    private long getCurrentMemberId() {
+        return AuthUtils.getMemberId();
     }
 }

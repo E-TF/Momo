@@ -36,7 +36,6 @@ public class SignupService {
         }
     }
 
-    @Transactional
     boolean hasDuplicateLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId).isPresent();
     }

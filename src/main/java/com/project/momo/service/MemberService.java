@@ -2,12 +2,10 @@ package com.project.momo.service;
 
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.dto.member.MemberInfoResponse;
-import com.project.momo.dto.member.PasswordUpdateRequest;
+import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.dto.payment.PaymentRequest;
 import com.project.momo.dto.payment.PaymentResponse;
-import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.entity.Member;
 import com.project.momo.entity.Payment;
 import com.project.momo.repository.MemberRepository;
@@ -18,139 +16,144 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
+    @Value("${service.member.max-payment-count}")
+    private short MAX_PAYMENT_CNT;
     private final MemberRepository memberRepository;
     private final PaymentRepository paymentRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${service.member.max-payment-count}")
-    private static short MAX_PAYMENT_CNT;
-
     @Transactional(readOnly = true)
-    public Member getMemberById() {
+    public Member getMemberById(long memberId) {
         return memberRepository
-                .findById(AuthUtils.getMemberId())
-                .orElseThrow(() -> {throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);});
+                .findById(memberId)
+                .orElseThrow(() -> {
+                    throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+                });
     }
 
     @Transactional(readOnly = true)
     public Payment getPaymentById(long paymentId) {
         return paymentRepository
                 .findById(paymentId)
-                .orElseThrow(()->{throw new BusinessException(ErrorCode.NO_PAYMENT_FOUND);});
+                .orElseThrow(() -> {
+                    throw new BusinessException(ErrorCode.NO_PAYMENT_FOUND);
+                });
     }
 
-    public MemberInfoResponse inquireMyAccountInfo(){
-        Member member = getMemberById();
+    @Transactional(readOnly = true)
+    public MemberInfoResponse inquireMyAccountInfo(long id) {
+        Member member = getMemberById(id);
         return new MemberInfoResponse(member);
     }
 
-    public PaymentResponse inquireMyPaymentInfo(long paymentId) {
-        Member member = getMemberById();
+    @Transactional(readOnly = true)
+    public PaymentResponse inquireMyPaymentInfo(long memberId, long paymentId) {
         Payment payment = getPaymentById(paymentId);
-        checkAuthForPayment(member, payment);
-
+        checkAuthForPayment(memberId, payment);
         return new PaymentResponse(payment);
     }
 
     @Transactional(readOnly = true)
-    public PaymentListResponse inquireAllMyPaymentsInfo() {
-        Member member = getMemberById();
-        return new PaymentListResponse(paymentRepository.findAllByMemberId(member.getId()));
+    public PaymentListResponse inquireAllMyPaymentsInfo(long memberId) {
+        Member member = getMemberById(memberId);
+        List<Payment> allByMemberId = paymentRepository.findAllByMemberId(member.getId());
+
+        return new PaymentListResponse(allByMemberId);
     }
 
     @Transactional
-    public MemberInfoResponse changeMyAccountName(String name) {
-        Member member = getMemberById();
+    public void changeMyAccountName(long memberId, String name) {
+        Member member = getMemberById(memberId);
         member.updateName(name);
-        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse changeMyAccountEmail(String email) {
-        Member member = getMemberById();
+    public void changeMyAccountEmail(long memberId, String email) {
+        Member member = getMemberById(memberId);
         member.updateEmail(email);
-        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse changeMyAccountPhoneNumber(String phoneNumber) {
-        Member member = getMemberById();
+    public void changeMyAccountPhoneNumber(long memberId, String phoneNumber) {
+        Member member = getMemberById(memberId);
         member.updatePhoneNumber(phoneNumber);
-        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse changeMyAccountPassword(PasswordUpdateRequest passwordUpdateRequest) {
-        Member member = getMemberById();
-
-        checkPasswordMatch(member, passwordUpdateRequest.getCurPassword());
-        checkPasswordDuplicate(member, passwordUpdateRequest.getNewPassword());
-        member.updatePassword(passwordEncoder.encode(passwordUpdateRequest.getNewPassword()));
-
-        return new MemberInfoResponse(member);
+    public void changeMyAccountPassword(long memberId, String rawInputPassword) {
+        Member member = getMemberById(memberId);
+        checkNewPasswordDuplicateWithPreviousPassword(member.getPassword(), rawInputPassword);
+        member.updatePassword(encodePassword(rawInputPassword));
     }
 
-    public MemberInfoResponse changeMyAccountPayment(long paymentId, PaymentRequest paymentRequest) {
-        Member member = getMemberById();
+    @Transactional
+    public void changeMyAccountPayment(long memberId, long paymentId, PaymentRequest paymentRequest) {
         Payment payment = getPaymentById(paymentId);
+        checkAuthForPayment(memberId, payment);
         payment.updatePayment(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
-
-        return new MemberInfoResponse(member);
     }
 
     @Transactional
-    public MemberInfoResponse registerNewPayment(PaymentRequest paymentRequest) {
-        Member member = getMemberById();
-        checkPaymentCnt(member);
-
+    public void registerNewPayment(long memberId, PaymentRequest paymentRequest) {
+        checkPaymentCntOverMaxLimit(memberId);
+        Member member = getMemberById(memberId);
         Payment payment = paymentRequest.toPayment(member);
-        member.increasePaymentCnt();
-
         paymentRepository.save(payment);
-        return new MemberInfoResponse(member);
+        member.addPayment(payment);
     }
 
     @Transactional
-    public MemberInfoResponse removeMyPayment(long paymentId) {
+    public void removeMyPayment(long memberId, long paymentId) {
         Payment payment = getPaymentById(paymentId);
-        Member member = getMemberById();
-        checkAuthForPayment(member, payment);
-
+        checkAuthForPayment(memberId, payment);
         paymentRepository.deleteById(paymentId);
-        member.decreasePaymentCnt();
+        Member member = getMemberById(memberId);
+        member.removePayment(payment);
+    }
 
-        return new MemberInfoResponse(member);
+    @Transactional(readOnly = true)
+    public void verifyPasswordBeforeUpdate(long memberId, String password){
+        Member member = getMemberById(memberId);
+        checkPasswordMatch(member.getPassword(), password);
     }
 
     @Transactional
-    public void withdraw() {
-        Member member = getMemberById();
-        memberRepository.deleteById(member.getId());
+    public void withdraw(long memberId) {
+        Member member = getMemberById(memberId);
         paymentRepository.deleteAllByMember(member);
+        memberRepository.deleteById(member.getId());
     }
 
-    private void checkPasswordMatch(Member member, String password){
-        if(!passwordEncoder.encode(password).equals(member.getPassword()))
+    private String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    private void checkPasswordMatch(String encodedMemberPassword, String rawInputPassword) {
+        if (!passwordEncoder.matches(rawInputPassword, encodedMemberPassword))
             throw new BusinessException(ErrorCode.WRONG_PASSWORD);
     }
 
-    private void checkPasswordDuplicate(Member member, String password) {
-        if (passwordEncoder.encode(member.getPassword()).equals(password)) {
+    private void checkNewPasswordDuplicateWithPreviousPassword(String encodedMemberPassword, String rawInputPassword) {
+        if (passwordEncoder.matches(rawInputPassword, encodedMemberPassword)) {
             throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
         }
     }
 
-    public void checkPaymentCnt(Member member){
+    @Transactional(readOnly = true)
+    public void checkPaymentCntOverMaxLimit(long memberId) {
+        Member member = getMemberById(memberId);
         if (member.getPaymentCnt() >= MAX_PAYMENT_CNT)
             throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
     }
 
-    private void checkAuthForPayment(Member member, Payment payment){
-        if(!member.getId().equals(payment.getMember().getId()))
+    private void checkAuthForPayment(long memberId, Payment payment) {
+        if (!payment.getMember().getId().equals(memberId))
             throw new BusinessException(ErrorCode.NO_AUTHORIZATION);
     }
 }

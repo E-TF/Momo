@@ -11,7 +11,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Size(min = 2, max = 45)
-@Target({METHOD, FIELD, PARAMETER})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = {})

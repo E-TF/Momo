@@ -7,12 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PasswordUpdateRequest {
-
+public class MemberPasswordUpdateRequest {
     @Password
-    private String curPassword;
-
-    @Password
-    private String newPassword;
-
+    String password;
 }

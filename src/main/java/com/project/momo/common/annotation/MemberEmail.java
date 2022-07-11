@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Size(max = 255)
 @Email
-@Target({METHOD, FIELD, PARAMETER})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = {})

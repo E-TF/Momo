@@ -47,11 +47,6 @@ public class Member extends BaseEntity {
     @Size(max = 500)
     private String imageUrl;
 
-    @Column(name = "payment_cnt", columnDefinition = "TINYINT")
-    @Min(0)
-    @Max(3)
-    private int paymentCnt;
-
     @Column(name = "oauth_type")
     @Enumerated(EnumType.STRING)
     private OauthType oauthType;
@@ -84,6 +79,10 @@ public class Member extends BaseEntity {
         return member;
     }
 
+    public int getPaymentCnt() {
+        return paymentList.size();
+    }
+
     public void updateName(String name) {
         this.name = name;
     }
@@ -100,11 +99,11 @@ public class Member extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public void increasePaymentCnt() {
-        this.paymentCnt++;
+    public void addPayment(Payment payment){
+        this.paymentList.add(payment);
     }
 
-    public void decreasePaymentCnt() {
-        this.paymentCnt--;
+    public void removePayment(Payment payment){
+        this.paymentList.remove(payment);
     }
 }
