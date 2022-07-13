@@ -9,11 +9,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @UtilityClass
 public class AuthUtils {
 
-    public static Long getMemberId() {
+    public static long getMemberId() {
         if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
             throw new BusinessException(ErrorCode.INVALID_AUTH_TOKEN);
         }
-        return (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

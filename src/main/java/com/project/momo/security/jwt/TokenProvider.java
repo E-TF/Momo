@@ -101,7 +101,7 @@ public class TokenProvider {
         } catch (IllegalArgumentException e) {
             throw new JwtException("Refresh JWT 토큰이 잘못되었습니다.");
         }
-        return authorizationService.checkRefreshToken(jwt);
+        return authorizationService.validateRefreshToken(jwt);
     }
 
     public String reissue(Long memberId) {

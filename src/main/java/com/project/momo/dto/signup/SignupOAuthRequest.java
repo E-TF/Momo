@@ -1,9 +1,7 @@
 package com.project.momo.dto.signup;
 
-import com.project.momo.common.annotation.MemberEmail;
-import com.project.momo.common.annotation.MemberName;
-import com.project.momo.common.annotation.OauthType;
-import com.project.momo.common.annotation.PhoneNumber;
+import com.project.momo.common.annotation.*;
+import com.project.momo.security.consts.OauthType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,15 @@ public class SignupOAuthRequest {
 
     private String oauthId;
 
-    @OauthType
     private String oauthType;
+
+    public static SignupOAuthDetails toSignupOAuthDetails(SignupOAuthRequest signupOAuthRequest){
+        return new SignupOAuthDetails(signupOAuthRequest.getName(),
+                signupOAuthRequest.getEmail(),
+                signupOAuthRequest.getImageUrl(),
+                signupOAuthRequest.getPhoneNumber(),
+                signupOAuthRequest.getOauthId(),
+                OauthType.toOauthType(signupOAuthRequest.getOauthType()));
+    }
 
 }

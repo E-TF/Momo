@@ -1,6 +1,7 @@
 package com.project.momo.entity;
 
 import com.project.momo.security.consts.OauthType;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "MEMBER")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     private static final String ANONYMOUS = "anonymous";
@@ -46,11 +47,6 @@ public class Member extends BaseEntity {
     @Size(max = 500)
     private String imageUrl;
 
-    @Column(name = "payment_cnt", columnDefinition = "TINYINT")
-    @Min(0)
-    @Max(3)
-    private int paymentCnt;
-
     @Column(name = "oauth_type")
     @Enumerated(EnumType.STRING)
     private OauthType oauthType;
@@ -72,6 +68,7 @@ public class Member extends BaseEntity {
 
     public static Member createOauth(OauthType oauthType, String oauthId, String name, String email, String phoneNumber, String imageUrl) {
         Member member = new Member();
+        member.loginId = oauthType + oauthId;
         member.oauthType = oauthType;
         member.oauthId = oauthId;
         member.name = name;
@@ -82,4 +79,31 @@ public class Member extends BaseEntity {
         return member;
     }
 
+    public int getPaymentCnt() {
+        return paymentList.size();
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void addPayment(Payment payment){
+        this.paymentList.add(payment);
+    }
+
+    public void removePayment(Payment payment){
+        this.paymentList.remove(payment);
+    }
 }

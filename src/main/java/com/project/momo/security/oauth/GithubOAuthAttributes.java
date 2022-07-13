@@ -19,7 +19,6 @@ public class GithubOAuthAttributes extends OAuthAttributes {
         String name = (String) attributes.get(NAME);
         String email = (String) attributes.get(EMAIL);
         String imageUrl = (String) attributes.get(IMAGE_URL);
-
         String oAuthId = String.valueOf(attributes.get(USER_NAME_ATTRIBUTE_NAME));
 
         return new GithubOAuthAttributes(oAuthId, name, email, imageUrl);

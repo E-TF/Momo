@@ -26,7 +26,7 @@ public class AuthorizationService {
     }
 
     @Transactional
-    public Long checkRefreshToken(String refreshToken) throws JwtException {
+    public Long validateRefreshToken(String refreshToken) throws JwtException {
         RefreshToken findByToken = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new JwtException("조작된 Refresh Token 입니다."));
         if (findByToken.getToken().equals(refreshToken))
             return findByToken.getMemberId();

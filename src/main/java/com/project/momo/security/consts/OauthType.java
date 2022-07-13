@@ -2,6 +2,8 @@ package com.project.momo.security.consts;
 
 import com.project.momo.common.exception.auth.InvalidOauthTypeException;
 
+import java.util.Arrays;
+
 public enum OauthType {
     GOOGLE("google"), GITHUB("github"), KAKAO("kakao"), NAVER("naver");
 
@@ -15,12 +17,7 @@ public enum OauthType {
         return this.value;
     }
 
-    public static OauthType get(String value) {
-        for (OauthType oauthType : OauthType.values()) {
-            if (oauthType.value.equals(value)) {
-                return oauthType;
-            }
-        }
-        throw new InvalidOauthTypeException(value);
+    public static OauthType toOauthType(String value){
+        return Arrays.stream(OauthType.values()).filter(v -> v.equals(value)).findFirst().orElseThrow(() -> new InvalidOauthTypeException(value));
     }
 }
