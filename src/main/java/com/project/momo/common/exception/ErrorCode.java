@@ -17,7 +17,11 @@ public enum ErrorCode {
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
     DUPLICATED_PASSWORD(HttpStatus.BAD_REQUEST, "기존 비밀번호와 동일힙니다."),
     NO_AUTHORIZATION(HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),
-    NO_PAYMENT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 결제수단입니다.");
+    NO_PAYMENT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 결제수단입니다."),
+
+    //CategoryService
+    CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 카테고리입니다."),
+    DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
