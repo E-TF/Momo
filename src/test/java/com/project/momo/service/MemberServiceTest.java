@@ -49,7 +49,6 @@ class MemberServiceTest {
         when(memberRepository.findById(ID_NOT_IN_DB)).thenReturn(Optional.empty());
         //when & then
         assertThrows(BusinessException.class, () -> memberService.getMemberById(ID_NOT_IN_DB));
-
     }
 
     @Test
@@ -64,7 +63,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("DB에 존재하지 않는 Member 의 id를 조회하면, BusinessException 이 발생한다.")
+    @DisplayName("DB에 존재하지 않는 Payment 의 id를 조회하면, BusinessException 이 발생한다.")
     void getPaymentByIdThrowsBusinessExceptionTest() {
         //given
         long ID_NOT_IN_DB = 0;

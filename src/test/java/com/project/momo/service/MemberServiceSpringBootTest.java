@@ -73,7 +73,6 @@ public class MemberServiceSpringBootTest {
 
         //then
         assertEquals(member.getPaymentCnt(), 1);
-
     }
 
     @Test
