@@ -48,6 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, "/api/signup/oauth").hasRole(Role.TEMPORARY)
                 .mvcMatchers(GET, "/api/loginid/duplicate").permitAll()
                 .mvcMatchers(GET, "/oauth2/**").permitAll()
+                .mvcMatchers(POST, "/api/category/profile/upload").hasRole(Role.ADMIN)
+                .mvcMatchers(GET, "/api/category").permitAll()
+                .mvcMatchers(GET, "/api/category/child").permitAll()
+                .mvcMatchers(POST, "/api/category").hasRole(Role.ADMIN)
+                .mvcMatchers(POST, "/api/category/child").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

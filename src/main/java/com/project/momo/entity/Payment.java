@@ -1,7 +1,5 @@
 package com.project.momo.entity;
 
-import com.project.momo.common.exception.BusinessException;
-import com.project.momo.common.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
