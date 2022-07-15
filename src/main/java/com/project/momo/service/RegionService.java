@@ -5,6 +5,7 @@ import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.dto.region.CityResponseList;
 import com.project.momo.dto.region.DistrictResponseList;
 import com.project.momo.dto.region.StateResponseList;
+import com.project.momo.entity.District;
 import com.project.momo.repository.CityRepository;
 import com.project.momo.repository.DistrictRepository;
 import com.project.momo.repository.StateRepository;
@@ -19,6 +20,15 @@ public class RegionService {
     private final CityRepository cityRepository;
     private final StateRepository stateRepository;
     private final DistrictRepository districtRepository;
+
+    @Transactional(readOnly = true)
+    public District getDistrictById(long districtId) {
+        return districtRepository
+                .findById(districtId)
+                .orElseThrow(()->
+                        new BusinessException(ErrorCode.DISTRICT_NOT_FOUND)
+                );
+    }
 
     @Transactional(readOnly = true)
     public CityResponseList inquireAllCity() {
@@ -47,11 +57,4 @@ public class RegionService {
             throw new BusinessException(ErrorCode.STATE_NOT_FOUND);
         }
     }
-
-    private void validateDistrict(long districtId) {
-        if (!districtRepository.existsById(districtId)) {
-            throw new BusinessException(ErrorCode.DISTRICT_NOT_FOUND);
-        }
-    }
-
 }

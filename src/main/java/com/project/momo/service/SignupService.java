@@ -31,13 +31,8 @@ public class SignupService {
 
     @Transactional(readOnly = true)
     public void checkDuplicateLoginId(String loginId) throws BusinessException {
-        if (hasDuplicateLoginId(loginId)) {
+        if (memberRepository.existsByLoginId(loginId)) {
             throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
         }
     }
-
-    private boolean hasDuplicateLoginId(String loginId) {
-        return memberRepository.findByLoginId(loginId).isPresent();
-    }
-
 }

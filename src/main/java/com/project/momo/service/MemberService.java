@@ -32,18 +32,18 @@ public class MemberService {
     public Member getMemberById(long memberId) {
         return memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> {
-                    throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-                });
+                .orElseThrow(() ->
+                    new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+                );
     }
 
     @Transactional(readOnly = true)
     public Payment getPaymentById(long paymentId) {
         return paymentRepository
                 .findById(paymentId)
-                .orElseThrow(() -> {
-                    throw new BusinessException(ErrorCode.NO_PAYMENT_FOUND);
-                });
+                .orElseThrow(() ->
+                    new BusinessException(ErrorCode.NO_PAYMENT_FOUND)
+                );
     }
 
     @Transactional(readOnly = true)
