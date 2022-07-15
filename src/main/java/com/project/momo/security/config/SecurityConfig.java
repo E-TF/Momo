@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, "/api/category/child").permitAll()
                 .mvcMatchers(POST, "/api/category").hasRole(Role.ADMIN)
                 .mvcMatchers(POST, "/api/category/child").hasRole(Role.ADMIN)
+                .mvcMatchers(GET, "/api/region/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

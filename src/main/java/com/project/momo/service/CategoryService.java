@@ -10,13 +10,16 @@ import com.project.momo.entity.Category;
 import com.project.momo.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
     public Category getCategoryById(long categoryId) {
         return categoryRepository
                 .findById(categoryId)
@@ -25,10 +28,12 @@ public class CategoryService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public ParentCategoryList inquireAllParentCategory() {
         return new ParentCategoryList(categoryRepository.findAllByParentId(null));
     }
 
+    @Transactional(readOnly = true)
     public ChildCategoryList inquireAllChildCategory(long parentCategoryId) {
         return new ChildCategoryList(categoryRepository.findAllByParentId(parentCategoryId));
     }
@@ -45,6 +50,7 @@ public class CategoryService {
         categoryRepository.save(newCategory);
     }
 
+    @Transactional(readOnly = true)
     public void checkDuplicateCategoryName(String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
             throw new BusinessException(ErrorCode.DUPLICATED_CATEGORY_NAME);

@@ -21,7 +21,12 @@ public enum ErrorCode {
 
     //CategoryService
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 카테고리입니다."),
-    DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다.");
+    DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다."),
+
+    //RegionService
+    CITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 CITY 번호입니다."),
+    STATE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 STATE 번호입니다."),
+    DISTRICT_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 DISTRICT 번호입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -9,16 +9,17 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Entity
-@Table(name = "DISTRICT")
+@Table(name = "STATE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class District {
+public class State {
+
     @Id
-    private Long id;
+    Long id;
 
     @NotBlank
-    private String name;
+    String name;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id")
-    private State state;
+    @JoinColumn(name = "city_id")
+    City city;
 }
