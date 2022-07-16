@@ -22,7 +22,7 @@ public class Member extends BaseEntity {
     private static final String ANONYMOUS = "anonymous";
 
     @Id
-    @GeneratedValue(generator = "SEQ_GENERATOR")
+    @GeneratedValue
     private Long id;
 
     @Column(name = "login_id", unique = true)
@@ -107,11 +107,11 @@ public class Member extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public void addPayment(Payment payment){
+    public void addPayment(Payment payment) {
         this.paymentList.add(payment);
     }
 
-    public void removePayment(Payment payment){
+    public void removePayment(Payment payment) {
         this.paymentList.remove(payment);
     }
 }

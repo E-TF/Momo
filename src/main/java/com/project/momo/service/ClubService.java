@@ -1,27 +1,30 @@
 package com.project.momo.service;
 
+import com.project.momo.common.constatnt.ClubRole;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.dto.club.ClubRegisterRequest;
+import com.project.momo.dto.club.ClubRegisterDto;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
-import com.project.momo.entity.Category;
 import com.project.momo.entity.Club;
-import com.project.momo.entity.District;
+import com.project.momo.entity.Consist;
 import com.project.momo.entity.Member;
 import com.project.momo.repository.ClubRepository;
+import com.project.momo.repository.ConsistRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ClubService {
 
+    @Value("${service.club.max-club-size}")
+    private int MAX_CLUB_SIZE;
+    @Value("${service.club.max-club-creation-per-member}")
+    private int MAX_CLUB_CREATION_PER_MEMBER;
     private final ClubRepository clubRepository;
-    private final MemberService memberService;
-    private final CategoryService categoryService;
-    private final RegionService regionService;
+    private final ConsistRepository consistRepository;
 
     @Transactional(readOnly = true)
     public Club getClubById(long clubId) {
@@ -47,13 +50,38 @@ public class ClubService {
         return new ClubSimpleInfoResponse(club);
     }
 
-    public void registerNewClub(ClubRegisterRequest clubRegisterRequest, long memberId) {
-        Member member = memberService.getMemberById(memberId);
-        checkDuplicateClubName(clubRegisterRequest.getName());
-        Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
-        District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
-        Club club = Club.createClub(clubRegisterRequest.getName(), clubRegisterRequest.getDescription(), category, clubRegisterRequest.getImageUrl(), district, member.getLoginId());
+    @Transactional
+    public void registerNewClub(long memberId, ClubRegisterDto clubRegisterDto) {
+        checkMaxClubCreationPerMember(memberId);
+        checkDuplicateClubName(clubRegisterDto.getName());
+        Club club = clubRegisterDto.toClub();
         clubRepository.save(club);
+    }
+
+    @Transactional
+    public void joinClubAsClubRole(Member member, Club club, ClubRole clubRole) {
+        checkClubSizeOverMaxLimit(club.getId());
+        checkDuplicateJoin(member.getId(), club.getId());
+        Consist consist = Consist.createConsist(member, club, clubRole);
+        consistRepository.save(consist);
+    }
+
+    private void checkMaxClubCreationPerMember(long memberId) {
+        if (MAX_CLUB_CREATION_PER_MEMBER <=consistRepository.countAllByMemberIdAndRole(memberId, ClubRole.MANAGER)) {
+            throw new BusinessException(ErrorCode.EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER);
+        }
+    }
+
+    private void checkDuplicateJoin(Long memberId, Long clubId) {
+        if (consistRepository.existsByMemberIdAndClubId(memberId, clubId)) {
+            throw new BusinessException(ErrorCode.DUPLICATED_CLUB_JOIN);
+        }
+    }
+
+    private void checkClubSizeOverMaxLimit(long clubId) {
+        if (consistRepository.countAllByClubId(clubId) >= MAX_CLUB_SIZE) {
+            throw new BusinessException(ErrorCode.EXCEED_CLUB_SIZE_LIMIT);
+        }
     }
 
     private void checkDuplicateClubName(String inputClubName) {

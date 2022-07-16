@@ -30,7 +30,10 @@ public enum ErrorCode {
 
     //ClubService
     CLUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 모임입니다."),
-    DUPLICATED_CLUB_NAME(HttpStatus.CONFLICT, "이미 존재하는 모임 이름입니다.");
+    DUPLICATED_CLUB_NAME(HttpStatus.CONFLICT, "이미 존재하는 모임 이름입니다."),
+    EXCEED_CLUB_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "최대 가입 인원을 초과하였습니다."),
+    DUPLICATED_CLUB_JOIN(HttpStatus.CONFLICT, "이미 가입한 모임입니다."),
+    EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER(HttpStatus.BAD_REQUEST, "최대 모임 생성 개수를 초과하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
