@@ -3,6 +3,9 @@ package com.project.momo.service;
 import com.project.momo.common.constatnt.ClubRole;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
+import com.project.momo.common.lock.DistributedLock;
+import com.project.momo.common.lock.DistributedLockPrefix;
+import com.project.momo.common.lock.LockName;
 import com.project.momo.dto.club.ClubRegisterDto;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
 import com.project.momo.entity.Club;
@@ -50,8 +53,9 @@ public class ClubService {
         return new ClubSimpleInfoResponse(club);
     }
 
+    @DistributedLock(prefix = DistributedLockPrefix.CLUB_NAME)
     @Transactional
-    public void registerNewClub(long memberId, ClubRegisterDto clubRegisterDto) {
+    public void registerNewClub(@LockName long memberId, ClubRegisterDto clubRegisterDto) {
         checkMaxClubCreationPerMember(memberId);
         checkDuplicateClubName(clubRegisterDto.getName());
         Club club = clubRegisterDto.toClub();
