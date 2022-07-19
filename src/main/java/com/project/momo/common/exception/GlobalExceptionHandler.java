@@ -45,4 +45,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleDuplicatedFileNameException(DuplicatedFileNameException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(exception));
     }
+
+    @ExceptionHandler()
+    public ResponseEntity<ErrorDto> handleDistributedLockException(DistributedLockException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDto(exception));
+    }
 }
