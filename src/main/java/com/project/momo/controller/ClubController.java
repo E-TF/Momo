@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/clubs")
@@ -16,12 +18,14 @@ public class ClubController {
     private final ClubService clubService;
 
     @GetMapping
-    public ResponseEntity<ClubSimpleInfoResponse> inquireClubSimpleInfo(long clubId) {
+    public ResponseEntity<ClubSimpleInfoResponse> inquireClubSimpleInfo(final long clubId) {
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
     }
 
     @PostMapping
-    public ResponseEntity<ClubSimpleInfoResponse> registerNewClub(@RequestBody ClubRegisterRequest clubRegisterRequest) {
+    public ResponseEntity<ClubSimpleInfoResponse> registerNewClub(
+            @RequestBody @Valid final ClubRegisterRequest clubRegisterRequest
+    ) {
         clubService.registerNewClub(clubRegisterRequest, getCurrentMemberId());
         long clubId = clubService.getClubByName(clubRegisterRequest.getName()).getId();
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));

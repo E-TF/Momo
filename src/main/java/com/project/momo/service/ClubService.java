@@ -43,16 +43,16 @@ public class ClubService {
 
     @Transactional(readOnly = true)
     public ClubSimpleInfoResponse inquireClubSimpleInfo(long clubId) {
-        Club club = getClubById(clubId);
+        final Club club = getClubById(clubId);
         return new ClubSimpleInfoResponse(club);
     }
 
     public void registerNewClub(ClubRegisterRequest clubRegisterRequest, long memberId) {
-        Member member = memberService.getMemberById(memberId);
+        final Member member = memberService.getMemberById(memberId);
         checkDuplicateClubName(clubRegisterRequest.getName());
-        Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
-        District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
-        Club club = Club.createClub(clubRegisterRequest.getName(), clubRegisterRequest.getDescription(), category, clubRegisterRequest.getImageUrl(), district, member.getLoginId());
+        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
+        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
+        final Club club = Club.createClub(clubRegisterRequest.getName(), clubRegisterRequest.getDescription(), category, clubRegisterRequest.getImageUrl(), district, member.getLoginId());
         clubRepository.save(club);
     }
 

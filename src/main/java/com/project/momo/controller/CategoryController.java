@@ -1,39 +1,46 @@
 package com.project.momo.controller;
 
-import com.project.momo.dto.category.ChildCategoryList;
 import com.project.momo.dto.category.ChildCategoryRequest;
-import com.project.momo.dto.category.ParentCategoryList;
+import com.project.momo.dto.category.ChildCategoryResponse;
 import com.project.momo.dto.category.ParentCategoryRequest;
+import com.project.momo.dto.category.ParentCategoryResponse;
 import com.project.momo.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping
-    public ResponseEntity<ParentCategoryList> inquireAllParentInterestTypes() {
+    @GetMapping("/category")
+    public ResponseEntity<List<ParentCategoryResponse>> inquireAllParentInterestTypes() {
         return ResponseEntity.ok(categoryService.inquireAllParentCategory());
     }
 
-    @GetMapping("/child")
-    public ResponseEntity<ChildCategoryList> inquireAllChildInterestTypes(@RequestParam long id) {
+    @GetMapping("/category/child")
+    public ResponseEntity<List<ChildCategoryResponse>> inquireAllChildInterestTypes(@RequestParam final long id) {
         return ResponseEntity.ok(categoryService.inquireAllChildCategory(id));
     }
 
-    @PostMapping
-    public ResponseEntity<?> registerNewParentCategory(@RequestBody ParentCategoryRequest parentCategoryRequest) {
+    @PostMapping("/admin/category")
+    public ResponseEntity registerNewParentCategory(
+            @RequestBody @Valid final ParentCategoryRequest parentCategoryRequest
+    ) {
         categoryService.registerNewParentCategory(parentCategoryRequest);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("child")
-    public ResponseEntity<?> registerNewChildCategory(@RequestBody ChildCategoryRequest childCategoryRequest) {
+    @PostMapping("/admin/category/child")
+    public ResponseEntity registerNewChildCategory(
+            @RequestBody @Valid final ChildCategoryRequest childCategoryRequest
+    ) {
         categoryService.registerNewChildCategory(childCategoryRequest);
         return ResponseEntity.ok().build();
     }

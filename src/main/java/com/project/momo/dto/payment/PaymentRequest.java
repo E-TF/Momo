@@ -7,16 +7,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentRequest {
-
+    @NotBlank
     private String cardNumber;
+    @NotBlank
     private String companyName;
+    @NotBlank
     private String password;
+    @NotNull
     private LocalDate validityPeriod;
 
     public Payment toPayment(Member member) {
