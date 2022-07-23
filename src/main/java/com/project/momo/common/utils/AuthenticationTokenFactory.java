@@ -17,4 +17,8 @@ public class AuthenticationTokenFactory {
         return new UsernamePasswordAuthenticationToken(memberId, null, Role.getDefaultUserRole());
     }
 
+    public static UsernamePasswordAuthenticationToken adminToken(long memberId){
+        return new UsernamePasswordAuthenticationToken(memberId, null, Role.getDefaultAdminRole());
+    }
+
 }

@@ -10,11 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
+import static lombok.AccessLevel.PROTECTED;
+
+@Getter
 @Entity
 @Table(name = "REFRESH_TOKEN")
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class RefreshToken {
 
     @Id

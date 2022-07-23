@@ -1,15 +1,15 @@
 package com.project.momo.dto.signup;
 
-import com.project.momo.common.annotation.*;
+import com.project.momo.common.annotation.member.*;
 import com.project.momo.entity.Member;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SignupRequest {
 
     @LoginId

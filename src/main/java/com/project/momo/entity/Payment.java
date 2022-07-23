@@ -1,8 +1,7 @@
 package com.project.momo.entity;
 
-import com.project.momo.common.exception.BusinessException;
-import com.project.momo.common.exception.ErrorCode;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +11,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+@Getter
 @Entity
 @Table(name = "PAYMENT")
-@Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
 

@@ -6,8 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@MappedSuperclass
 @Getter
+@MappedSuperclass
 public abstract class BaseEntity {
 
     @Column(name = "created_by", updatable = false)

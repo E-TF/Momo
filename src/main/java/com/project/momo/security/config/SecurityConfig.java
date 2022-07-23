@@ -10,6 +10,7 @@ import com.project.momo.security.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,10 +45,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, "/api/login/**").permitAll()
                 .mvcMatchers(POST, "/api/s3/member/profile").hasAnyRole(Role.TEMPORARY, Role.USER)
                 .mvcMatchers(POST, "/api/s3/club/profile").hasRole(Role.USER)
+                .mvcMatchers(GET,"/api/signup/**").permitAll()
                 .mvcMatchers(POST, "/api/signup").permitAll()
                 .mvcMatchers(POST, "/api/signup/oauth").hasRole(Role.TEMPORARY)
                 .mvcMatchers(GET, "/api/loginid/duplicate").permitAll()
                 .mvcMatchers(GET, "/oauth2/**").permitAll()
+                .mvcMatchers(GET, "/api/category/**").permitAll()
+                .mvcMatchers(GET, "/api/region/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
