@@ -3,9 +3,6 @@ package com.project.momo.service;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.dto.club.ClubRegisterRequest;
-import com.project.momo.entity.Category;
-import com.project.momo.entity.District;
-import com.project.momo.entity.Member;
 import com.project.momo.repository.ClubRepository;
 import com.project.momo.repository.ConsistRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,18 +18,18 @@ public class ClubServiceTest {
     private ClubRepository clubRepository;
     private ConsistRepository consistRepository;
     private ClubService clubService;
-    private Member member;
-    private Category category;
-    private District district;
+    private MemberService memberService;
+    private CategoryService categoryService;
+    private RegionService regionService;
 
     @BeforeEach
     void beforeEach() {
         clubRepository = mock(ClubRepository.class);
         consistRepository = mock(ConsistRepository.class);
-        clubService = new ClubService(clubRepository, consistRepository);
-        member = mock(Member.class);
-        category = mock(Category.class);
-        district = mock(District.class);
+        memberService = mock(MemberService.class);
+        categoryService = mock(CategoryService.class);
+        regionService = mock(RegionService.class);
+        clubService = new ClubService(clubRepository, consistRepository, memberService, categoryService, regionService);
     }
 
     @Test
@@ -47,7 +44,7 @@ public class ClubServiceTest {
 
         //when & then
         try {
-            clubService.registerNewClub(clubRegisterRequest, member, category, district);
+            clubService.registerNewClub(clubRegisterRequest, 0L);
         } catch (BusinessException e) {
             assertEquals(e.getErrorCode(), ErrorCode.DUPLICATED_CLUB_NAME);
             return;

@@ -17,13 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ClubService {
-
-    private final ClubRepository clubRepository;
-    private final ConsistRepository consistRepository;
     @Value("${service.club.max-club-size}")
     private int MAX_CLUB_SIZE;
     @Value("${service.club.max-club-creation-per-member}")
     private int MAX_CLUB_CREATION_PER_MEMBER;
+
+    private final ClubRepository clubRepository;
+    private final ConsistRepository consistRepository;
+    private final MemberService memberService;
+    private final CategoryService categoryService;
+    private final RegionService regionService;
 
     @Transactional(readOnly = true)
     public Club getClubById(long clubId) {
@@ -55,21 +58,27 @@ public class ClubService {
     }
 
     @Transactional
-    public long registerNewClub(ClubRegisterRequest clubRegisterRequest, final Member member, final Category category, final District district) {
+    public long registerNewClub(ClubRegisterRequest clubRegisterRequest, final long memberId) {
+        final Member member = memberService.getMemberById(memberId);
         checkDuplicateClubName(clubRegisterRequest.getName());
+        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
+        categoryService.checkCategoryLevelChild(category);
+        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
         final Club club = Club.createClub(clubRegisterRequest.getName(),
                 clubRegisterRequest.getDescription(),
                 category, clubRegisterRequest.getImageUrl(),
                 district, member.getLoginId());
         clubRepository.save(club);
-        joinClubAsClubRole(member, club, ClubRole.MANAGER);
+        joinClubAsClubRole(memberId, club.getId(), ClubRole.MANAGER);
         return club.getId();
     }
 
     @Transactional
-    public void joinClubAsClubRole(Member member, Club club, ClubRole clubRole) {
-        checkClubSizeOverMaxLimit(club.getId());
-        checkDuplicateJoin(member.getId(), club.getId());
+    public void joinClubAsClubRole(long memberId, long clubId, ClubRole clubRole) {
+        Member member = memberService.getMemberById(memberId);
+        Club club = getClubById(clubId);
+        checkClubSizeOverMaxLimit(clubId);
+        checkDuplicateJoin(memberId, clubId);
         Consist consist = Consist.createConsist(member, club, clubRole);
         consistRepository.save(consist);
     }

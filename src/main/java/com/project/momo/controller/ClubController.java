@@ -36,9 +36,7 @@ public class ClubController {
 
     @PostMapping("/member")
     public ResponseEntity<?> joinClubAsGeneralMember(@RequestBody ClubJoinRequest clubJoinRequest) {
-        Member member = memberService.getMemberById(getCurrentMemberId());
-        Club club = clubService.getClubById(clubJoinRequest.getClubId());
-        clubService.joinClubAsClubRole(member, club, ClubRole.GENERAL);
+        clubService.joinClubAsClubRole(getCurrentMemberId(), clubJoinRequest.getClubId(), ClubRole.GENERAL);
         return ResponseEntity.ok().build();
     }
 
@@ -48,10 +46,7 @@ public class ClubController {
     ) {
         final long memberId = getCurrentMemberId();
         clubService.checkMaxClubCreationPerMember(memberId);
-        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
-        categoryService.checkCategoryLevelChild(category);
-        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
-        long clubId = clubService.registerNewClub(clubRegisterRequest, memberService.getMemberById(memberId), category, district);
+        long clubId = clubService.registerNewClub(clubRegisterRequest, getCurrentMemberId());
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
     }
 
