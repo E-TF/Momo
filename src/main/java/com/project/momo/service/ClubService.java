@@ -3,11 +3,9 @@ package com.project.momo.service;
 import com.project.momo.common.constatnt.ClubRole;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.dto.club.ClubRegisterDto;
+import com.project.momo.dto.club.ClubRegisterRequest;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
-import com.project.momo.entity.Club;
-import com.project.momo.entity.Consist;
-import com.project.momo.entity.Member;
+import com.project.momo.entity.*;
 import com.project.momo.repository.ClubRepository;
 import com.project.momo.repository.ConsistRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ClubService {
 
@@ -25,6 +24,9 @@ public class ClubService {
     private int MAX_CLUB_CREATION_PER_MEMBER;
     private final ClubRepository clubRepository;
     private final ConsistRepository consistRepository;
+    private final MemberService memberService;
+    private final CategoryService categoryService;
+    private final RegionService regionService;
 
     @Transactional(readOnly = true)
     public Club getClubById(long clubId) {
@@ -46,15 +48,18 @@ public class ClubService {
 
     @Transactional(readOnly = true)
     public ClubSimpleInfoResponse inquireClubSimpleInfo(long clubId) {
-        Club club = getClubById(clubId);
+        final Club club = getClubById(clubId);
         return new ClubSimpleInfoResponse(club);
     }
 
     @Transactional
-    public void registerNewClub(long memberId, ClubRegisterDto clubRegisterDto) {
+    public void registerNewClub(ClubRegisterRequest clubRegisterRequest, long memberId) {
+        final Member member = memberService.getMemberById(memberId);
         checkMaxClubCreationPerMember(memberId);
-        checkDuplicateClubName(clubRegisterDto.getName());
-        Club club = clubRegisterDto.toClub();
+        checkDuplicateClubName(clubRegisterRequest.getName());
+        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
+        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
+        final Club club = Club.createClub(clubRegisterRequest.getName(), clubRegisterRequest.getDescription(), category, clubRegisterRequest.getImageUrl(), district, member.getLoginId());
         clubRepository.save(club);
     }
 

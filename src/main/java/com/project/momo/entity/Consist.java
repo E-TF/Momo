@@ -2,6 +2,7 @@ package com.project.momo.entity;
 
 import com.project.momo.common.constatnt.ClubRole;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "CONSIST")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Consist extends BaseEntity {
 

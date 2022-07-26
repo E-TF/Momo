@@ -12,24 +12,25 @@ public enum ErrorCode {
     INVALID_LOGIN_ID(HttpStatus.BAD_REQUEST, "아이디는 크기가 3에서 45 사이여야 합니다"),
 
     //MyPage, MemberService
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     EXCEED_PAYMENT_CNT_LIMIT(HttpStatus.BAD_REQUEST, "결제 수단은 최대 3개까지 등록이 가능합니다."),
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
-    DUPLICATED_PASSWORD(HttpStatus.BAD_REQUEST, "기존 비밀번호와 동일힙니다."),
+    DUPLICATED_PASSWORD(HttpStatus.CONFLICT, "기존 비밀번호와 동일힙니다."),
     NO_AUTHORIZATION(HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),
-    NO_PAYMENT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 결제수단입니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 결제수단입니다."),
 
     //CategoryService
-    CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 카테고리입니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
     DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다."),
+    NOT_PARENT_CATEGORY(HttpStatus.BAD_REQUEST, "상위 카테고리에만 하위 카테고리를 추가할 수 있습니다."),
 
     //RegionService
-    CITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 CITY 번호입니다."),
-    STATE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 STATE 번호입니다."),
-    DISTRICT_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 DISTRICT 번호입니다."),
+    CITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 CITY 번호입니다."),
+    STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 STATE 번호입니다."),
+    DISTRICT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 DISTRICT 번호입니다."),
 
     //ClubService
-    CLUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 모임입니다."),
+    CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 모임입니다."),
     DUPLICATED_CLUB_NAME(HttpStatus.CONFLICT, "이미 존재하는 모임 이름입니다."),
     EXCEED_CLUB_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "최대 가입 인원을 초과하였습니다."),
     DUPLICATED_CLUB_JOIN(HttpStatus.CONFLICT, "이미 가입한 모임입니다."),

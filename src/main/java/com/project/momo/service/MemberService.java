@@ -3,7 +3,6 @@ package com.project.momo.service;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.dto.member.MemberInfoResponse;
-import com.project.momo.dto.payment.PaymentListResponse;
 import com.project.momo.dto.payment.PaymentRequest;
 import com.project.momo.dto.payment.PaymentResponse;
 import com.project.momo.entity.Member;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,59 +42,59 @@ public class MemberService {
         return paymentRepository
                 .findById(paymentId)
                 .orElseThrow(() ->
-                    new BusinessException(ErrorCode.NO_PAYMENT_FOUND)
+                    new BusinessException(ErrorCode.PAYMENT_NOT_FOUND)
                 );
     }
 
     @Transactional(readOnly = true)
     public MemberInfoResponse inquireMyAccountInfo(long id) {
-        Member member = getMemberById(id);
+        final Member member = getMemberById(id);
         return new MemberInfoResponse(member);
     }
 
     @Transactional(readOnly = true)
     public PaymentResponse inquireMyPaymentInfo(long memberId, long paymentId) {
-        Payment payment = getPaymentById(paymentId);
+        final Payment payment = getPaymentById(paymentId);
         checkAuthForPayment(memberId, payment);
         return new PaymentResponse(payment);
     }
 
     @Transactional(readOnly = true)
-    public PaymentListResponse inquireAllMyPaymentsInfo(long memberId) {
-        Member member = getMemberById(memberId);
-        List<Payment> allByMemberId = paymentRepository.findAllByMemberId(member.getId());
-
-        return new PaymentListResponse(allByMemberId);
+    public List<PaymentResponse> inquireAllMyPaymentsInfo(long memberId) {
+        return paymentRepository
+                .findAllByMemberId(getMemberById(memberId).getId())
+                .stream().map(PaymentResponse::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void changeMyAccountName(long memberId, String name) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         member.updateName(name);
     }
 
     @Transactional
     public void changeMyAccountEmail(long memberId, String email) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         member.updateEmail(email);
     }
 
     @Transactional
     public void changeMyAccountPhoneNumber(long memberId, String phoneNumber) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         member.updatePhoneNumber(phoneNumber);
     }
 
     @Transactional
     public void changeMyAccountPassword(long memberId, String rawInputPassword) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         checkNewPasswordDuplicateWithPreviousPassword(member.getPassword(), rawInputPassword);
         member.updatePassword(encodePassword(rawInputPassword));
     }
 
     @Transactional
     public void changeMyAccountPayment(long memberId, long paymentId, PaymentRequest paymentRequest) {
-        Payment payment = getPaymentById(paymentId);
+        final Payment payment = getPaymentById(paymentId);
         checkAuthForPayment(memberId, payment);
         payment.updatePayment(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
     }
@@ -102,30 +102,30 @@ public class MemberService {
     @Transactional
     public void registerNewPayment(long memberId, PaymentRequest paymentRequest) {
         checkPaymentCntOverMaxLimit(memberId);
-        Member member = getMemberById(memberId);
-        Payment payment = paymentRequest.toPayment(member);
+        final Member member = getMemberById(memberId);
+        final Payment payment = paymentRequest.toPayment(member);
         paymentRepository.save(payment);
         member.addPayment(payment);
     }
 
     @Transactional
     public void removeMyPayment(long memberId, long paymentId) {
-        Payment payment = getPaymentById(paymentId);
+        final Payment payment = getPaymentById(paymentId);
         checkAuthForPayment(memberId, payment);
         paymentRepository.deleteById(paymentId);
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         member.removePayment(payment);
     }
 
     @Transactional(readOnly = true)
     public void verifyPasswordBeforeUpdate(long memberId, String password){
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         checkPasswordMatch(member.getPassword(), password);
     }
 
     @Transactional
     public void withdraw(long memberId) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         paymentRepository.deleteAllByMember(member);
         memberRepository.deleteById(member.getId());
     }
@@ -147,7 +147,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkPaymentCntOverMaxLimit(long memberId) {
-        Member member = getMemberById(memberId);
+        final Member member = getMemberById(memberId);
         if (member.getPaymentCnt() >= MAX_PAYMENT_CNT)
             throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
     }
