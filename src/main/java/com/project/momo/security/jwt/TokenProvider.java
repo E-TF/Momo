@@ -2,6 +2,7 @@ package com.project.momo.security.jwt;
 
 import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.common.utils.AuthenticationTokenFactory;
+import com.project.momo.repository.AdminRoleRepository;
 import com.project.momo.security.consts.JwtConst;
 import com.project.momo.security.consts.TokenType;
 import com.project.momo.service.AuthorizationService;
@@ -26,6 +27,7 @@ public class TokenProvider {
     private final long accessTokenValidTimeInMillis;
     private final long refreshTokenValidTimeInMillis;
     private final AuthorizationService authorizationService;
+    private final AdminRoleRepository adminRoleRepository;
 
     private JwtParser jwtParser;
     private Key key;
@@ -33,12 +35,14 @@ public class TokenProvider {
     public TokenProvider(@Value("${jwt.secret}") String secret,
                          @Value("${jwt.access-token-valid-time-in-seconds}") long accessTokenValidTimeInSeconds,
                          @Value("${jwt.refresh-token-valid-time-in-seconds}") long refreshTokenValidTimeInSeconds,
-                         AuthorizationService authorizationService
+                         AuthorizationService authorizationService,
+                         AdminRoleRepository adminRoleRepository
     ) {
         this.secret = secret;
         this.accessTokenValidTimeInMillis = accessTokenValidTimeInSeconds * VALID_TIME_TO_MILLS;
         this.refreshTokenValidTimeInMillis = refreshTokenValidTimeInSeconds * VALID_TIME_TO_MILLS;
         this.authorizationService = authorizationService;
+        this.adminRoleRepository = adminRoleRepository;
     }
 
     @PostConstruct
@@ -70,6 +74,8 @@ public class TokenProvider {
         Long memberId = jwtParser.parseClaimsJws(jwt).getBody().get(JwtConst.MEMBER_ID_CLAIM_NAME, Long.class);
         if (memberId == null) {
             return AuthenticationTokenFactory.tempToken();
+        } else if (adminRoleRepository.existsByMemberId(memberId)) {
+            return AuthenticationTokenFactory.adminToken(memberId);
         }
         return AuthenticationTokenFactory.userToken(memberId);
     }
