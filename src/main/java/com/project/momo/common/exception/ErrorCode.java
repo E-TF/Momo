@@ -22,6 +22,7 @@ public enum ErrorCode {
     //CategoryService
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
     DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다."),
+    NOT_PARENT_CATEGORY(HttpStatus.BAD_REQUEST, "상위 카테고리에만 하위 카테고리를 추가할 수 있습니다."),
 
     //RegionService
     CITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 CITY 번호입니다."),
