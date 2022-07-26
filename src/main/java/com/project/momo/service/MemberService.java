@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
 
-    @Value("${service.member.max-payment-count}")
-    private short MAX_PAYMENT_CNT;
     private final MemberRepository memberRepository;
     private final PaymentRepository paymentRepository;
     private final PasswordEncoder passwordEncoder;
+    @Value("${service.member.max-payment-count}")
+    private short MAX_PAYMENT_CNT;
 
     @Transactional(readOnly = true)
     public Member getMemberById(long memberId) {
         return memberRepository
                 .findById(memberId)
                 .orElseThrow(() ->
-                    new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+                        new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
                 );
     }
 
@@ -42,14 +42,14 @@ public class MemberService {
         return paymentRepository
                 .findById(paymentId)
                 .orElseThrow(() ->
-                    new BusinessException(ErrorCode.PAYMENT_NOT_FOUND)
+                        new BusinessException(ErrorCode.PAYMENT_NOT_FOUND)
                 );
     }
 
     @Transactional(readOnly = true)
-    public MemberInfoResponse inquireMyAccountInfo(long id) {
-        final Member member = getMemberById(id);
-        return new MemberInfoResponse(member);
+    public MemberInfoResponse inquireMyAccountInfo(long memberId) {
+        final Member member = getMemberById(memberId);
+        return new MemberInfoResponse(member, paymentRepository.countByMemberId(memberId));
     }
 
     @Transactional(readOnly = true)
@@ -105,7 +105,6 @@ public class MemberService {
         final Member member = getMemberById(memberId);
         final Payment payment = paymentRequest.toPayment(member);
         paymentRepository.save(payment);
-        member.addPayment(payment);
     }
 
     @Transactional
@@ -113,12 +112,10 @@ public class MemberService {
         final Payment payment = getPaymentById(paymentId);
         checkAuthForPayment(memberId, payment);
         paymentRepository.deleteById(paymentId);
-        final Member member = getMemberById(memberId);
-        member.removePayment(payment);
     }
 
     @Transactional(readOnly = true)
-    public void verifyPasswordBeforeUpdate(long memberId, String password){
+    public void verifyPasswordBeforeUpdate(long memberId, String password) {
         final Member member = getMemberById(memberId);
         checkPasswordMatch(member.getPassword(), password);
     }
@@ -147,8 +144,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkPaymentCntOverMaxLimit(long memberId) {
-        final Member member = getMemberById(memberId);
-        if (member.getPaymentCnt() >= MAX_PAYMENT_CNT)
+        if (paymentRepository.countByMemberId(memberId) >= MAX_PAYMENT_CNT)
             throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
     }
 

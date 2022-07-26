@@ -53,7 +53,7 @@ public class CategoryService {
 
     public void registerNewChildCategory(ChildCategoryRequest childCategoryRequest) {
         final Category parent = getCategoryById(childCategoryRequest.getParentCategoryId());
-        checkCategoryParentLevel(parent);
+        checkCategoryLevelParent(parent);
         checkDuplicateCategoryName(childCategoryRequest.getName());
         final Category newCategory = Category.createChildCategory(childCategoryRequest.getName(), parent);
         categoryRepository.save(newCategory);
@@ -66,9 +66,15 @@ public class CategoryService {
         }
     }
 
-    public void checkCategoryParentLevel(Category category) {
+    private void checkCategoryLevelParent(Category category) {
         if (category.getParent() != null) {
             throw new BusinessException(ErrorCode.NOT_PARENT_CATEGORY);
+        }
+    }
+
+    public void checkCategoryLevelChild(Category category) {
+        if (category.getParent() == null) {
+            throw new BusinessException(ErrorCode.NOT_CHILD_CATEGORY);
         }
     }
 }

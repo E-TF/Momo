@@ -18,23 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ClubService {
 
+    private final ClubRepository clubRepository;
+    private final ConsistRepository consistRepository;
     @Value("${service.club.max-club-size}")
     private int MAX_CLUB_SIZE;
     @Value("${service.club.max-club-creation-per-member}")
     private int MAX_CLUB_CREATION_PER_MEMBER;
-    private final ClubRepository clubRepository;
-    private final ConsistRepository consistRepository;
-    private final MemberService memberService;
-    private final CategoryService categoryService;
-    private final RegionService regionService;
 
     @Transactional(readOnly = true)
     public Club getClubById(long clubId) {
         return clubRepository
                 .findById(clubId)
-                .orElseThrow(() ->
-                        new BusinessException(ErrorCode.CLUB_NOT_FOUND)
-                );
+                .orElseThrow(() -> new BusinessException(ErrorCode.CLUB_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Consist getConsistById(long memberId, long clubId) {
+        return consistRepository
+                .findByMemberIdAndClubId(memberId, clubId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONSIST_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -53,14 +55,15 @@ public class ClubService {
     }
 
     @Transactional
-    public void registerNewClub(ClubRegisterRequest clubRegisterRequest, long memberId) {
-        final Member member = memberService.getMemberById(memberId);
-        checkMaxClubCreationPerMember(memberId);
+    public long registerNewClub(ClubRegisterRequest clubRegisterRequest, final Member member, final Category category, final District district) {
         checkDuplicateClubName(clubRegisterRequest.getName());
-        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
-        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
-        final Club club = Club.createClub(clubRegisterRequest.getName(), clubRegisterRequest.getDescription(), category, clubRegisterRequest.getImageUrl(), district, member.getLoginId());
+        final Club club = Club.createClub(clubRegisterRequest.getName(),
+                clubRegisterRequest.getDescription(),
+                category, clubRegisterRequest.getImageUrl(),
+                district, member.getLoginId());
         clubRepository.save(club);
+        joinClubAsClubRole(member, club, ClubRole.MANAGER);
+        return club.getId();
     }
 
     @Transactional
@@ -71,8 +74,9 @@ public class ClubService {
         consistRepository.save(consist);
     }
 
-    private void checkMaxClubCreationPerMember(long memberId) {
-        if (MAX_CLUB_CREATION_PER_MEMBER <=consistRepository.countAllByMemberIdAndRole(memberId, ClubRole.MANAGER)) {
+    @Transactional(readOnly = true)
+    public void checkMaxClubCreationPerMember(long memberId) {
+        if (MAX_CLUB_CREATION_PER_MEMBER <= consistRepository.countAllByMemberIdAndRole(memberId, ClubRole.MANAGER)) {
             throw new BusinessException(ErrorCode.EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER);
         }
     }

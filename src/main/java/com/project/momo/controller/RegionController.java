@@ -20,12 +20,12 @@ public class RegionController {
 
     private final RegionService regionService;
 
-    @GetMapping("/cities")
+    @GetMapping("/states")
     public ResponseEntity<List<StateResponse>> inquireAllStates() {
         return ResponseEntity.ok(regionService.inquireAllStates());
     }
 
-    @GetMapping("/states")
+    @GetMapping("/cities")
     public ResponseEntity<List<CityResponse>> inquireAllCitiesWithState(@RequestParam final long stateId) {
         return ResponseEntity.ok(regionService.inquireAllCitiesWithState(stateId));
     }

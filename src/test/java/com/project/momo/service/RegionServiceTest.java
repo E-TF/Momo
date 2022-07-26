@@ -31,13 +31,13 @@ class RegionServiceTest {
     private RegionService regionService;
 
     private final long STATE_ID = 0;
-    private final String STATE_NAME = "testStateName";
+    private final String STATE_NAME = "TEST_STATE_NAME";
     private final State state = new State(STATE_ID, STATE_NAME);
     private final long CITY_ID = 1;
-    private final String CITY_NAME = "testCityName";
+    private final String CITY_NAME = "TEST_CITY_NAME";
     private final City city = new City(CITY_ID, CITY_NAME, state);
     private final long DISTRICT_ID = 2;
-    private final String DISTRICT_NAME = "testDistrictName";
+    private final String DISTRICT_NAME = "TEST_DISTRICT_NAME";
     private final District district = new District(DISTRICT_ID, DISTRICT_NAME, city);
 
     @BeforeEach

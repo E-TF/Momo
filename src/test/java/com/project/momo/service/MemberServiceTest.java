@@ -33,8 +33,10 @@ class MemberServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        member = Member.createMember("testId", "testPW", "testName", "test@test.com", "010-1234-5678");
-        payment = Payment.createPayment("companyName", "000-000000-00000", LocalDate.now(), "password", member);
+        member = Member.createMember("TEST_ID", "TEST_PW", "TEST_NAME",
+                "TEST_EMAIL", "010-1234-5678");
+        payment = Payment.createPayment("COMPANY_NAME", "000-000000-00000", LocalDate.now(),
+                "TEST_PAYMENT_PW", member);
         memberRepository = mock(MemberRepository.class);
         paymentRepository = mock(PaymentRepository.class);
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -97,8 +99,7 @@ class MemberServiceTest {
                 () -> assertEquals(memberInfoResponse.getEmail(), member.getEmail()),
                 () -> assertEquals(memberInfoResponse.getPhoneNumber(), member.getPhoneNumber()),
                 () -> assertEquals(memberInfoResponse.getImageUrl(), member.getImageUrl()),
-                () -> assertEquals(memberInfoResponse.getPoints(), member.getPoints()),
-                () -> assertEquals(memberInfoResponse.getPaymentCnt(), member.getPaymentCnt())
+                () -> assertEquals(memberInfoResponse.getPoints(), member.getPoints())
         );
     }
 

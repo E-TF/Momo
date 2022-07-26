@@ -23,6 +23,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
     DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, "이미 존재하는 카테고리명입니다."),
     NOT_PARENT_CATEGORY(HttpStatus.BAD_REQUEST, "상위 카테고리에만 하위 카테고리를 추가할 수 있습니다."),
+    NOT_CHILD_CATEGORY(HttpStatus.BAD_REQUEST, "하위 카테고리를 지정해주세요."),
 
     //RegionService
     CITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 CITY 번호입니다."),
@@ -34,7 +35,8 @@ public enum ErrorCode {
     DUPLICATED_CLUB_NAME(HttpStatus.CONFLICT, "이미 존재하는 모임 이름입니다."),
     EXCEED_CLUB_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "최대 가입 인원을 초과하였습니다."),
     DUPLICATED_CLUB_JOIN(HttpStatus.CONFLICT, "이미 가입한 모임입니다."),
-    EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER(HttpStatus.BAD_REQUEST, "최대 모임 생성 개수를 초과하였습니다.");
+    EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER(HttpStatus.BAD_REQUEST, "최대 모임 생성 개수를 초과하였습니다."),
+    CONSIST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 클럽에 가입되어 있지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -5,7 +5,9 @@ import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.dto.club.ClubJoinRequest;
 import com.project.momo.dto.club.ClubRegisterRequest;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
+import com.project.momo.entity.Category;
 import com.project.momo.entity.Club;
+import com.project.momo.entity.District;
 import com.project.momo.entity.Member;
 import com.project.momo.service.CategoryService;
 import com.project.momo.service.ClubService;
@@ -24,6 +26,8 @@ public class ClubController {
 
     private final ClubService clubService;
     private final MemberService memberService;
+    private final CategoryService categoryService;
+    private final RegionService regionService;
 
     @GetMapping
     public ResponseEntity<ClubSimpleInfoResponse> inquireClubSimpleInfo(final long clubId) {
@@ -42,8 +46,12 @@ public class ClubController {
     public ResponseEntity<ClubSimpleInfoResponse> registerNewClub(
             @RequestBody @Valid final ClubRegisterRequest clubRegisterRequest
     ) {
-        clubService.registerNewClub(clubRegisterRequest, getCurrentMemberId());
-        long clubId = clubService.getClubByName(clubRegisterRequest.getName()).getId();
+        final long memberId = getCurrentMemberId();
+        clubService.checkMaxClubCreationPerMember(memberId);
+        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
+        categoryService.checkCategoryLevelChild(category);
+        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
+        long clubId = clubService.registerNewClub(clubRegisterRequest, memberService.getMemberById(memberId), category, district);
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
     }
 

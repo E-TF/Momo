@@ -18,7 +18,7 @@ public class ClubRegisterRequest {
     private String description;
     @Min(0)
     private long categoryId;
-    private String imageUrl;
     @Min(0)
     private long districtId;
+    private String imageUrl;
 }
