@@ -1,7 +1,9 @@
 package com.project.momo.entity;
 
+import com.project.momo.common.constatnt.ClubRole;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Getter
 @Entity
 @Table(name = "CONSIST")
 @AllArgsConstructor
@@ -19,9 +22,8 @@ public class Consist extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Size(max = 20)
-    @NotBlank
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private ClubRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -33,4 +35,12 @@ public class Consist extends BaseEntity {
     @NotNull
     private Club club;
 
+    public static Consist createConsist(Member member, Club club, ClubRole role) {
+        Consist consist = new Consist();
+        consist.member = member;
+        consist.club = club;
+        consist.role = role;
+        consist.createdBy = member.getLoginId();
+        return consist;
+    }
 }

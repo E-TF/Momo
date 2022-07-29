@@ -1,6 +1,8 @@
 package com.project.momo.controller;
 
+import com.project.momo.common.constatnt.ClubRole;
 import com.project.momo.common.utils.AuthUtils;
+import com.project.momo.dto.club.ClubJoinRequest;
 import com.project.momo.dto.club.ClubRegisterRequest;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
 import com.project.momo.service.ClubService;
@@ -22,12 +24,19 @@ public class ClubController {
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
     }
 
+    @PostMapping("/member")
+    public ResponseEntity<?> joinClubAsGeneralMember(@RequestBody final ClubJoinRequest clubJoinRequest) {
+        clubService.joinClubAsClubRole(getCurrentMemberId(), clubJoinRequest.getClubId(), ClubRole.MEMBER);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping
     public ResponseEntity<ClubSimpleInfoResponse> registerNewClub(
             @RequestBody @Valid final ClubRegisterRequest clubRegisterRequest
     ) {
-        clubService.registerNewClub(clubRegisterRequest, getCurrentMemberId());
-        long clubId = clubService.getClubByName(clubRegisterRequest.getName()).getId();
+        final long memberId = getCurrentMemberId();
+        clubService.checkMaxClubCreationPerMember(memberId);
+        long clubId = clubService.registerNewClub(clubRegisterRequest, getCurrentMemberId());
         return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
     }
 

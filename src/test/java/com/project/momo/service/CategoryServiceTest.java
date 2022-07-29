@@ -32,16 +32,16 @@ public class CategoryServiceTest {
     @DisplayName("하위 카테고리에 새로운 하위 카테고리를 등록하면 NOT_PARENT_CATEGORY(BusinessException)이 발생한다.")
     void registerNewChildCategoryFailTest() {
         //given
-        long CHILD_CATEGORY_ID = 0l;
+        long CHILD_CATEGORY_ID = 0L;
         Category parentCategory = new Category(
                 1L,
-                "parentCategoryName",
-                "parentCategoryImageUrl",
+                "TEST_NAME",
+                "TEST_IMAGE_URL",
                 null);
-        Category childCategory = new Category(CHILD_CATEGORY_ID, "childCategory", null, parentCategory);
+        Category childCategory = new Category(CHILD_CATEGORY_ID, "TEST_CHILD_NAME", null, parentCategory);
         when(categoryRepository.findById(CHILD_CATEGORY_ID)).thenReturn(Optional.of(childCategory));
         ChildCategoryRequest childCategoryRequest = new ChildCategoryRequest(
-                "newCategoryName", CHILD_CATEGORY_ID);
+                "NEW_CATEGORY_NAME", CHILD_CATEGORY_ID);
 
         //when & then
         try {
@@ -57,13 +57,13 @@ public class CategoryServiceTest {
     @DisplayName("중복된 카테고리의 이름을 등록하면 DUPLICATED_CATEGORY_NAME(BusinessException)이 발생한다.")
     void registerNewParentCategoryFailTest() {
         //given
-        String CATEGORY_NAME_IN_DB = "TEST_CATEGORY_NAME";
-        when(categoryRepository.existsByName(CATEGORY_NAME_IN_DB)).thenReturn(true);
+        String DUPLICATED_CATEGORY_NAME = "TEST_CATEGORY_NAME";
+        when(categoryRepository.existsByName(DUPLICATED_CATEGORY_NAME)).thenReturn(true);
 
         //when & then
         try {
             categoryService
-                    .registerNewParentCategory(new ParentCategoryRequest(CATEGORY_NAME_IN_DB, "imageUrl"));
+                    .registerNewParentCategory(new ParentCategoryRequest(DUPLICATED_CATEGORY_NAME, "IMAGE_URL"));
         } catch (BusinessException e) {
             assertEquals(e.getErrorCode(), ErrorCode.DUPLICATED_CATEGORY_NAME);
             return;

@@ -20,18 +20,17 @@ public class AuthorizationService {
         Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findById(memberId);
         if (optionalRefreshToken.isPresent()) {
             optionalRefreshToken.get().updateToken(refreshToken);
-        } else {
-            refreshTokenRepository.save(new RefreshToken(memberId, refreshToken));
+            return;
         }
+        refreshTokenRepository.save(new RefreshToken(memberId, refreshToken));
     }
 
     @Transactional(readOnly = true)
     public Long validateRefreshToken(String refreshToken) throws JwtException {
         RefreshToken findByToken = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new JwtException("조작된 Refresh Token 입니다."));
-        if (findByToken.getToken().equals(refreshToken))
-            return findByToken.getMemberId();
-
-        throw new JwtException("조작된 Refresh Token 입니다.");
+        if (!findByToken.getToken().equals(refreshToken))
+            throw new JwtException("조작된 Refresh Token 입니다.");
+        return findByToken.getMemberId();
     }
 
 }

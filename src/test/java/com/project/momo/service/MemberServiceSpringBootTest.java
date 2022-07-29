@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 public class MemberServiceSpringBootTest {
 
-    private final String MEMBER_LOGIN_ID = "testId";
+    private final String MEMBER_LOGIN_ID = "TEST_ID";
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -42,9 +42,11 @@ public class MemberServiceSpringBootTest {
 
     @BeforeEach
     void beforeEach() {
-        signupService.signup(new SignupRequest(MEMBER_LOGIN_ID, "testPW", "testName", "test@test.com", "010-1234-5678"));
+        signupService.signup(new SignupRequest(MEMBER_LOGIN_ID, "TEST_PW", "TEST_NAME",
+                "TEST@EMAIL.COM", "010-1234-5678"));
         member = memberRepository.findByLoginId(MEMBER_LOGIN_ID).get();
-        paymentRequest = new PaymentRequest("CARD_NUMBER", "COMPANY_NAME", "PASSWORD", LocalDate.now());
+        paymentRequest = new PaymentRequest("CARD_NUMBER",
+                "COMPANY_NAME", "PASSWORD", LocalDate.now());
     }
 
     @Test
@@ -63,16 +65,6 @@ public class MemberServiceSpringBootTest {
             return;
         }
         fail();
-    }
-
-    @Test
-    @DisplayName("사용자가 결제수단을 등록하면, 사용자(Member)의 결제수단 수(paymentCnt)가 1 증가한다.")
-    void registerNewPaymentSuccessTest() {
-        //when
-        memberService.registerNewPayment(member.getId(), new PaymentRequest("CARD_NUMBER", "COMPANY_NAME", "PASSWORD", LocalDate.now()));
-
-        //then
-        assertEquals(member.getPaymentCnt(), 1);
     }
 
     @Test
