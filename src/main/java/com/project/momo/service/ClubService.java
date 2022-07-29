@@ -6,11 +6,9 @@ import com.project.momo.common.exception.ErrorCode;
 import com.project.momo.common.lock.DistributedLock;
 import com.project.momo.common.lock.DistributedLockPrefix;
 import com.project.momo.common.lock.LockName;
-import com.project.momo.dto.club.ClubRegisterDto;
+import com.project.momo.dto.club.ClubRegisterRequest;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
-import com.project.momo.entity.Club;
-import com.project.momo.entity.Consist;
-import com.project.momo.entity.Member;
+import com.project.momo.entity.*;
 import com.project.momo.repository.ClubRepository;
 import com.project.momo.repository.ConsistRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +17,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ClubService {
-
     @Value("${service.club.max-club-size}")
     private int MAX_CLUB_SIZE;
     @Value("${service.club.max-club-creation-per-member}")
     private int MAX_CLUB_CREATION_PER_MEMBER;
+
     private final ClubRepository clubRepository;
     private final ConsistRepository consistRepository;
+    private final MemberService memberService;
+    private final CategoryService categoryService;
+    private final RegionService regionService;
 
     @Transactional(readOnly = true)
     public Club getClubById(long clubId) {
         return clubRepository
                 .findById(clubId)
-                .orElseThrow(() ->
-                        new BusinessException(ErrorCode.CLUB_NOT_FOUND)
-                );
+                .orElseThrow(() -> new BusinessException(ErrorCode.CLUB_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Consist getConsistById(long memberId, long clubId) {
+        return consistRepository
+                .findByMemberIdAndClubId(memberId, clubId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONSIST_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -49,29 +56,40 @@ public class ClubService {
 
     @Transactional(readOnly = true)
     public ClubSimpleInfoResponse inquireClubSimpleInfo(long clubId) {
-        Club club = getClubById(clubId);
+        final Club club = getClubById(clubId);
         return new ClubSimpleInfoResponse(club);
     }
 
     @DistributedLock(prefix = DistributedLockPrefix.CLUB_NAME)
     @Transactional
-    public void registerNewClub(@LockName long memberId, ClubRegisterDto clubRegisterDto) {
-        checkMaxClubCreationPerMember(memberId);
-        checkDuplicateClubName(clubRegisterDto.getName());
-        Club club = clubRegisterDto.toClub();
+    public long registerNewClub(@LockName final long memberId, ClubRegisterRequest clubRegisterRequest) {
+        final Member member = memberService.getMemberById(memberId);
+        checkDuplicateClubName(clubRegisterRequest.getName());
+        final Category category = categoryService.getCategoryById(clubRegisterRequest.getCategoryId());
+        categoryService.checkCategoryLevelChild(category);
+        final District district = regionService.getDistrictById(clubRegisterRequest.getDistrictId());
+        final Club club = Club.createClub(clubRegisterRequest.getName(),
+                clubRegisterRequest.getDescription(),
+                category, clubRegisterRequest.getImageUrl(),
+                district, member.getLoginId());
         clubRepository.save(club);
+        joinClubAsClubRole(memberId, club.getId(), ClubRole.MANAGER);
+        return club.getId();
     }
 
     @Transactional
-    public void joinClubAsClubRole(Member member, Club club, ClubRole clubRole) {
-        checkClubSizeOverMaxLimit(club.getId());
-        checkDuplicateJoin(member.getId(), club.getId());
+    public void joinClubAsClubRole(long memberId, long clubId, ClubRole clubRole) {
+        Member member = memberService.getMemberById(memberId);
+        Club club = getClubById(clubId);
+        checkClubSizeOverMaxLimit(clubId);
+        checkDuplicateJoin(memberId, clubId);
         Consist consist = Consist.createConsist(member, club, clubRole);
         consistRepository.save(consist);
     }
 
-    private void checkMaxClubCreationPerMember(long memberId) {
-        if (MAX_CLUB_CREATION_PER_MEMBER <=consistRepository.countAllByMemberIdAndRole(memberId, ClubRole.MANAGER)) {
+    @Transactional(readOnly = true)
+    public void checkMaxClubCreationPerMember(long memberId) {
+        if (MAX_CLUB_CREATION_PER_MEMBER <= consistRepository.countAllByMemberIdAndRole(memberId, ClubRole.MANAGER)) {
             throw new BusinessException(ErrorCode.EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER);
         }
     }

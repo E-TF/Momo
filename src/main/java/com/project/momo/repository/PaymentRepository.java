@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-
     Optional<Payment> findById(long id);
 
     List<Payment> findAllByMemberId(Long id);
 
-    void deleteAllByMember(Member member);
+    int countByMemberId(long memberId);
 
+    void deleteAllByMember(Member member);
 }

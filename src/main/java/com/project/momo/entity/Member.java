@@ -2,6 +2,7 @@ package com.project.momo.entity;
 
 import com.project.momo.security.consts.OauthType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +11,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "MEMBER")
-@Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
@@ -60,9 +60,6 @@ public class Member extends BaseEntity {
     @Size(max = 20)
     private String oauthId;
 
-    @OneToMany(mappedBy = "member")
-    private List<Payment> paymentList = new ArrayList<>();
-
     public static Member createMember(String loginId, String password, String name, String email, String phoneNumber) {
         Member member = new Member();
         member.loginId = loginId;
@@ -87,10 +84,6 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public int getPaymentCnt() {
-        return paymentList.size();
-    }
-
     public void updateName(String name) {
         this.name = name;
     }
@@ -105,13 +98,5 @@ public class Member extends BaseEntity {
 
     public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public void addPayment(Payment payment) {
-        this.paymentList.add(payment);
-    }
-
-    public void removePayment(Payment payment) {
-        this.paymentList.remove(payment);
     }
 }

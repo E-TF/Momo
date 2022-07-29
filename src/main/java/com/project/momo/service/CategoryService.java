@@ -2,15 +2,15 @@ package com.project.momo.service;
 
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.dto.category.ChildCategoryList;
-import com.project.momo.dto.category.ChildCategoryRequest;
-import com.project.momo.dto.category.ParentCategoryList;
-import com.project.momo.dto.category.ParentCategoryRequest;
+import com.project.momo.dto.category.*;
 import com.project.momo.entity.Category;
 import com.project.momo.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,13 +29,21 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public ParentCategoryList inquireAllParentCategory() {
-        return new ParentCategoryList(categoryRepository.findAllByParentId(null));
+    public List<ParentCategoryResponse> inquireAllParentCategory() {
+        return categoryRepository
+                .findAllByParentId(null)
+                .stream()
+                .map(ParentCategoryResponse::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ChildCategoryList inquireAllChildCategory(long parentCategoryId) {
-        return new ChildCategoryList(categoryRepository.findAllByParentId(parentCategoryId));
+    public List<ChildCategoryResponse> inquireAllChildCategory(long parentCategoryId) {
+        return categoryRepository
+                .findAllByParentId(parentCategoryId)
+                .stream()
+                .map(ChildCategoryResponse::new)
+                .collect(Collectors.toList());
     }
 
     public void registerNewParentCategory(ParentCategoryRequest parentCategoryRequest) {
@@ -44,9 +52,10 @@ public class CategoryService {
     }
 
     public void registerNewChildCategory(ChildCategoryRequest childCategoryRequest) {
-        Category parent = getCategoryById(childCategoryRequest.getParentCategoryId());
+        final Category parent = getCategoryById(childCategoryRequest.getParentCategoryId());
+        checkCategoryLevelParent(parent);
         checkDuplicateCategoryName(childCategoryRequest.getName());
-        Category newCategory = Category.createChildCategory(childCategoryRequest.getName(), parent);
+        final Category newCategory = Category.createChildCategory(childCategoryRequest.getName(), parent);
         categoryRepository.save(newCategory);
     }
 
@@ -54,6 +63,18 @@ public class CategoryService {
     public void checkDuplicateCategoryName(String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
             throw new BusinessException(ErrorCode.DUPLICATED_CATEGORY_NAME);
+        }
+    }
+
+    private void checkCategoryLevelParent(Category category) {
+        if (category.getParent() != null) {
+            throw new BusinessException(ErrorCode.NOT_PARENT_CATEGORY);
+        }
+    }
+
+    public void checkCategoryLevelChild(Category category) {
+        if (category.getParent() == null) {
+            throw new BusinessException(ErrorCode.NOT_CHILD_CATEGORY);
         }
     }
 }
