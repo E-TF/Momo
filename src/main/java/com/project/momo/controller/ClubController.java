@@ -25,8 +25,8 @@ public class ClubController {
     }
 
     @PostMapping("/member")
-    public ResponseEntity<?> joinClubAsGeneralMember(@RequestBody ClubJoinRequest clubJoinRequest) {
-        clubService.joinClubAsClubRole(getCurrentMemberId(), clubJoinRequest.getClubId(), ClubRole.GENERAL);
+    public ResponseEntity<?> joinClubAsGeneralMember(@RequestBody final ClubJoinRequest clubJoinRequest) {
+        clubService.joinClubAsClubRole(getCurrentMemberId(), clubJoinRequest.getClubId(), ClubRole.MEMBER);
         return ResponseEntity.ok().build();
     }
 
