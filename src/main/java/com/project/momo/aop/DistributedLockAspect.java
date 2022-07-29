@@ -24,7 +24,7 @@ import java.time.Duration;
 @Order(1)
 @RequiredArgsConstructor
 public class DistributedLockAspect {
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(1);
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(3);
     private final DistributedLockManager distributedLockManager;
 
     @Around("@annotation(distributedLock)")
@@ -34,8 +34,7 @@ public class DistributedLockAspect {
         try {
             joinPoint.proceed();
         } catch (Throwable throwable) {
-            BusinessException cause = (BusinessException) throwable.getCause();
-            throw cause;
+            throw (BusinessException) throwable.getCause();
         }
         distributedLockManager.releaseLock(lockName);
     }
@@ -47,7 +46,7 @@ public class DistributedLockAspect {
         Object[] args = joinPoint.getArgs();
         for (int i = 0; i < args.length; i++) {
             for (Annotation annotation : annotations[i]) {
-                if (LockName.class.isInstance(annotation)) {
+                if (annotation instanceof LockName) {
                     hasLockName = true;
                     lockName += args[i];
                     break;

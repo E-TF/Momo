@@ -33,7 +33,7 @@ public class DistributedLockManagerImpl implements DistributedLockManager {
             PreparedStatement statement = con.prepareStatement(GET_LOCK);
             statement.setString(LOCK_NAME_IDX, lockName);
             statement.setInt(TIMEOUT_IDX, (int) timeout.getSeconds());
-            check(statement.executeQuery());
+            checkResultSetSuccess(statement.executeQuery());
         } catch (SQLException e) {
             throw new DistributedLockException(e);
         }
@@ -46,7 +46,7 @@ public class DistributedLockManagerImpl implements DistributedLockManager {
             PreparedStatement statement = connection.prepareStatement(RELEASE_LOCK);
             statement.setString(LOCK_NAME_IDX, lockName);
             ResultSet rs = statement.executeQuery();
-            check(rs);
+            checkResultSetSuccess(rs);
         } catch (SQLException | DistributedLockException e) {
             //TODO 개발자 알림 추가
         } finally {
@@ -54,7 +54,7 @@ public class DistributedLockManagerImpl implements DistributedLockManager {
         }
     }
 
-    private void check(ResultSet rs) throws SQLException, DistributedLockException {
+    private void checkResultSetSuccess(ResultSet rs) throws SQLException, DistributedLockException {
         if (!rs.next() || rs.getInt(RESULT_IDX) != SUCCESS) {
             throw new DistributedLockException(ErrorCode.LOCK_FAILURE);
         }

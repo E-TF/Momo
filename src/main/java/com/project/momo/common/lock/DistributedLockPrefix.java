@@ -1,5 +1,8 @@
 package com.project.momo.common.lock;
 
+import lombok.Getter;
+
+@Getter
 public enum DistributedLockPrefix {
     CLUB_NAME("club_name");
 
@@ -7,9 +10,5 @@ public enum DistributedLockPrefix {
 
     DistributedLockPrefix(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }
