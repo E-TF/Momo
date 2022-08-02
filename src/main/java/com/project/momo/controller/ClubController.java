@@ -5,7 +5,7 @@ import com.project.momo.common.utils.AuthUtils;
 import com.project.momo.dto.club.ClubJoinRequest;
 import com.project.momo.dto.club.ClubRegisterRequest;
 import com.project.momo.dto.club.ClubSimpleInfoResponse;
-import com.project.momo.service.ClubService;
+import com.project.momo.service.FClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,17 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/clubs")
 public class ClubController {
-
-    private final ClubService clubService;
+    private final FClubService fClubService;
 
     @GetMapping
     public ResponseEntity<ClubSimpleInfoResponse> inquireClubSimpleInfo(final long clubId) {
-        return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
+        return ResponseEntity.ok(fClubService.inquireClubSimpleInfo(clubId));
     }
 
     @PostMapping("/member")
-    public ResponseEntity<?> joinClubAsGeneralMember(@RequestBody final ClubJoinRequest clubJoinRequest) {
-        clubService.joinClubAsClubRole(getCurrentMemberId(), clubJoinRequest.getClubId(), ClubRole.MEMBER);
+    public ResponseEntity<?> joinClubAsMember(@RequestBody final ClubJoinRequest clubJoinRequest) {
+        fClubService
+                .joinClubAsClubRoleWithDistributedLock(clubJoinRequest.getClubId(), getCurrentMemberId(), ClubRole.MEMBER);
         return ResponseEntity.ok().build();
     }
 
@@ -35,9 +35,10 @@ public class ClubController {
             @RequestBody @Valid final ClubRegisterRequest clubRegisterRequest
     ) {
         final long memberId = getCurrentMemberId();
-        clubService.checkMaxClubCreationPerMember(memberId);
-        long clubId = clubService.registerNewClub(memberId, clubRegisterRequest);
-        return ResponseEntity.ok(clubService.inquireClubSimpleInfo(clubId));
+        fClubService.registerNewClubWithMemberIdDistributedLock(memberId, clubRegisterRequest);
+        final long clubId = fClubService.getClubByName(clubRegisterRequest.getName());
+        fClubService.joinClubAsClubRoleWithDistributedLock(clubId, memberId, ClubRole.MANAGER);
+        return ResponseEntity.ok(fClubService.inquireClubSimpleInfo(clubId));
     }
 
     private long getCurrentMemberId() {

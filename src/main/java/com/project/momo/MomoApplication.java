@@ -1,5 +1,6 @@
 package com.project.momo;
 
+import com.project.momo.event.LockNameVerifyEvent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MomoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MomoApplication.class, args);
+        SpringApplication app = new SpringApplication(MomoApplication.class);
+        app.addListeners(new LockNameVerifyEvent());
+        app.run(args);
     }
 
 }

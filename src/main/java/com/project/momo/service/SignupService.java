@@ -2,30 +2,36 @@ package com.project.momo.service;
 
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
+import com.project.momo.common.lock.DistributedLock;
+import com.project.momo.common.lock.DistributedLockPrefix;
+import com.project.momo.common.lock.LockName;
+import com.project.momo.common.utils.PasswordManager;
 import com.project.momo.dto.signup.SignupOAuthDetails;
 import com.project.momo.dto.signup.SignupRequest;
 import com.project.momo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class SignupService {
-
+    private final ObjectProvider<SignupService> provider;
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordManager passwordManager;
 
+    @DistributedLock(prefix = DistributedLockPrefix.MEMBER_LOGIN_ID)
     @Transactional
-    public void signup(SignupRequest signupRequest) throws BusinessException {
-        checkDuplicateLoginId(signupRequest.getLoginId());
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+    public void signup(@LockName final String loginId, SignupRequest signupRequest) throws BusinessException {
+        provider.getObject().checkDuplicateLoginId(loginId);
+        signupRequest.setPassword(passwordManager.encodePassword(signupRequest.getPassword()));
         memberRepository.save(signupRequest.toMember());
     }
 
+    @DistributedLock(prefix = DistributedLockPrefix.MEMBER_LOGIN_ID)
     @Transactional
-    public void signupOAuth(SignupOAuthDetails signupOAuthDetails) {
+    public void signupOAuth(@LockName final String loginId, SignupOAuthDetails signupOAuthDetails) {
         memberRepository.save(signupOAuthDetails.toMember());
     }
 
