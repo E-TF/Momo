@@ -23,7 +23,7 @@ public class SignupService {
 
     @DistributedLock(prefix = DistributedLockPrefix.MEMBER_LOGIN_ID)
     @Transactional
-    public void signup(@LockName final String loginId, SignupRequest signupRequest) throws BusinessException {
+    public void signup(@LockName final String loginId, SignupRequest signupRequest) {
         provider.getObject().checkDuplicateLoginId(loginId);
         signupRequest.setPassword(passwordManager.encodePassword(signupRequest.getPassword()));
         memberRepository.save(signupRequest.toMember());
@@ -36,7 +36,7 @@ public class SignupService {
     }
 
     @Transactional(readOnly = true)
-    public void checkDuplicateLoginId(String loginId) throws BusinessException {
+    public void checkDuplicateLoginId(String loginId) {
         if (memberRepository.existsByLoginId(loginId)) {
             throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
         }

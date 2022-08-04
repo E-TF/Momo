@@ -26,7 +26,7 @@ public class ClubController {
     @PostMapping("/member")
     public ResponseEntity<?> joinClubAsMember(@RequestBody final ClubJoinRequest clubJoinRequest) {
         fClubService
-                .joinClubAsClubRoleWithDistributedLock(clubJoinRequest.getClubId(), getCurrentMemberId(), ClubRole.MEMBER);
+                .joinClubAsClubRole(clubJoinRequest.getClubId(), getCurrentMemberId(), ClubRole.MEMBER);
         return ResponseEntity.ok().build();
     }
 
@@ -34,10 +34,7 @@ public class ClubController {
     public ResponseEntity<ClubSimpleInfoResponse> registerNewClub(
             @RequestBody @Valid final ClubRegisterRequest clubRegisterRequest
     ) {
-        final long memberId = getCurrentMemberId();
-        fClubService.registerNewClubWithMemberIdDistributedLock(memberId, clubRegisterRequest);
-        final long clubId = fClubService.getClubByName(clubRegisterRequest.getName());
-        fClubService.joinClubAsClubRoleWithDistributedLock(clubId, memberId, ClubRole.MANAGER);
+        final long clubId = fClubService.checkClubCreationLimitAndRegisterNewClub(getCurrentMemberId(), clubRegisterRequest);
         return ResponseEntity.ok(fClubService.inquireClubSimpleInfo(clubId));
     }
 

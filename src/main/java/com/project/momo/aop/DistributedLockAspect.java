@@ -1,5 +1,6 @@
 package com.project.momo.aop;
 
+import com.project.momo.common.constatnt.OrderSequence;
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.lock.DistributedLock;
 import com.project.momo.common.lock.DistributedLockManager;
@@ -17,7 +18,7 @@ import java.time.Duration;
 
 @Aspect
 @Component
-@Order(1)
+@Order(OrderSequence.PRIMARY)
 @RequiredArgsConstructor
 public class DistributedLockAspect {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(3);
@@ -37,17 +38,17 @@ public class DistributedLockAspect {
     }
 
     private String getLockName(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) {
-        String lockName = distributedLock.prefix().getValue();
+        StringBuilder lockName = new StringBuilder(distributedLock.prefix().getValue());
         Annotation[][] annotations = ((MethodSignature) joinPoint.getSignature()).getMethod().getParameterAnnotations();
         Object[] args = joinPoint.getArgs();
         for (int i = 0; i < args.length; i++) {
             for (Annotation annotation : annotations[i]) {
                 if (annotation instanceof LockName) {
-                    lockName += args[i];
+                    lockName.append(args[i]);
                     break;
                 }
             }
         }
-        return lockName;
+        return lockName.toString();
     }
 }

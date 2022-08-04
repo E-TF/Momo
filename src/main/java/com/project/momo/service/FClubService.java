@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FClubService {
+    private final MemberService memberService;
     private final ClubService clubService;
     private final ObjectProvider<FClubService> proxy;
 
@@ -21,29 +22,29 @@ public class FClubService {
     }
 
     @DistributedLock(prefix = DistributedLockPrefix.CLUB_ID)
-    public void joinClubAsClubRoleWithDistributedLock(@LockName final long clubId, final long memberId, ClubRole role) {
+    public void joinClubAsClubRole(@LockName final long clubId, final long memberId, ClubRole role) {
+        memberService.getMemberById(memberId);
         clubService.checkClubSizeOverMaxLimit(clubId);
         clubService.checkDuplicateJoin(memberId, clubId);
         clubService.joinClubAsClubRole(memberId, clubId, role);
     }
 
     @DistributedLock(prefix = DistributedLockPrefix.MEMBER_ID)
-    public void registerNewClubWithMemberIdDistributedLock(@LockName final long memberId,
-                                                           ClubRegisterRequest clubRegisterRequest) {
+    public long checkClubCreationLimitAndRegisterNewClub(@LockName final long memberId,
+                                                         final ClubRegisterRequest clubRegisterRequest) {
+        memberService.getMemberById(memberId);
         clubService.checkMaxClubCreationPerMember(memberId);
-        proxy
+        final long clubId = proxy
                 .getObject()
-                .registerNewClubWithClubNameDistributedLock(clubRegisterRequest.getName(), memberId, clubRegisterRequest);
+                .registerNewClub(clubRegisterRequest.getName(), memberId, clubRegisterRequest);
+        proxy.getObject().joinClubAsClubRole(clubId, memberId, ClubRole.MANAGER);
+        return clubId;
     }
 
     @DistributedLock(prefix = DistributedLockPrefix.CLUB_NAME)
-    public void registerNewClubWithClubNameDistributedLock(@LockName final String clubName, final long memberId,
-                                                           ClubRegisterRequest clubRegisterRequest) {
+    public long registerNewClub(@LockName final String clubName, final long memberId,
+                                ClubRegisterRequest clubRegisterRequest) {
         clubService.checkDuplicateClubName(clubName);
-        clubService.registerNewClub(memberId, clubRegisterRequest);
-    }
-
-    public long getClubByName(String name) {
-        return clubService.getClubByName(name).getId();
+        return clubService.registerNewClub(memberId, clubRegisterRequest);
     }
 }
