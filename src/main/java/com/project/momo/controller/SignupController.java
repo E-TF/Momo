@@ -23,12 +23,13 @@ public class SignupController {
 
     @PostMapping
     public void signup(@RequestBody @Valid SignupRequest signupRequest) {
-        signupService.signup(signupRequest);
+        signupService.signup(signupRequest.getLoginId(), signupRequest);
     }
 
     @PostMapping("/oauth")
     public void signupOAuth(@RequestBody @Valid final SignupOAuthRequest signupOAuthRequest) {
-        signupService.signupOAuth(SignupOAuthRequest.toSignupOAuthDetails(signupOAuthRequest));
+        String loginId = signupOAuthRequest.getOauthType() + signupOAuthRequest.getOauthId();
+        signupService.signupOAuth(loginId, SignupOAuthRequest.toSignupOAuthDetails(signupOAuthRequest));
     }
 
     @GetMapping("/loginid/duplicate")
