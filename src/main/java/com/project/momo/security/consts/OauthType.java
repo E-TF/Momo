@@ -1,9 +1,11 @@
 package com.project.momo.security.consts;
 
 import com.project.momo.common.exception.auth.InvalidOauthTypeException;
+import lombok.Getter;
 
 import java.util.Arrays;
 
+@Getter
 public enum OauthType {
     GOOGLE("google"), GITHUB("github"), KAKAO("kakao"), NAVER("naver");
 
@@ -11,10 +13,6 @@ public enum OauthType {
 
     OauthType(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
     }
 
     public static OauthType toOauthType(String value){

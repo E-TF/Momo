@@ -2,6 +2,10 @@ package com.project.momo.service;
 
 import com.project.momo.common.exception.BusinessException;
 import com.project.momo.common.exception.ErrorCode;
+import com.project.momo.common.lock.DistributedLock;
+import com.project.momo.common.lock.DistributedLockPrefix;
+import com.project.momo.common.lock.LockName;
+import com.project.momo.common.utils.PasswordManager;
 import com.project.momo.dto.member.MemberInfoResponse;
 import com.project.momo.dto.payment.PaymentRequest;
 import com.project.momo.dto.payment.PaymentResponse;
@@ -11,7 +15,6 @@ import com.project.momo.repository.MemberRepository;
 import com.project.momo.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +27,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PaymentRepository paymentRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordManager passwordManager;
     @Value("${service.member.max-payment-count}")
     private short MAX_PAYMENT_CNT;
 
@@ -89,7 +92,7 @@ public class MemberService {
     public void changeMyAccountPassword(long memberId, String rawInputPassword) {
         final Member member = getMemberById(memberId);
         checkNewPasswordDuplicateWithPreviousPassword(member.getPassword(), rawInputPassword);
-        member.updatePassword(encodePassword(rawInputPassword));
+        member.updatePassword(passwordManager.encodePassword(rawInputPassword));
     }
 
     @Transactional
@@ -99,8 +102,9 @@ public class MemberService {
         payment.updatePayment(paymentRequest.getCompanyName(), paymentRequest.getCardNumber(), paymentRequest.getValidityPeriod());
     }
 
+    @DistributedLock(prefix = DistributedLockPrefix.MEMBER_ID)
     @Transactional
-    public void registerNewPayment(long memberId, PaymentRequest paymentRequest) {
+    public void registerNewPayment(@LockName long memberId, PaymentRequest paymentRequest) {
         checkPaymentCntOverMaxLimit(memberId);
         final Member member = getMemberById(memberId);
         final Payment payment = paymentRequest.toPayment(member);
@@ -127,25 +131,21 @@ public class MemberService {
         memberRepository.deleteById(member.getId());
     }
 
-    private String encodePassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
-    }
-
-    private void checkPasswordMatch(String encodedMemberPassword, String rawInputPassword) {
-        if (!passwordEncoder.matches(rawInputPassword, encodedMemberPassword))
-            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
-    }
-
-    private void checkNewPasswordDuplicateWithPreviousPassword(String encodedMemberPassword, String rawInputPassword) {
-        if (passwordEncoder.matches(rawInputPassword, encodedMemberPassword)) {
-            throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
-        }
-    }
-
     @Transactional(readOnly = true)
     public void checkPaymentCntOverMaxLimit(long memberId) {
         if (paymentRepository.countByMemberId(memberId) >= MAX_PAYMENT_CNT)
             throw new BusinessException(ErrorCode.EXCEED_PAYMENT_CNT_LIMIT);
+    }
+
+    private void checkPasswordMatch(String encodedMemberPassword, String rawInputPassword) {
+        if (!passwordManager.matches(rawInputPassword, encodedMemberPassword))
+            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
+    }
+
+    private void checkNewPasswordDuplicateWithPreviousPassword(String encodedMemberPassword, String rawInputPassword) {
+        if (passwordManager.matches(rawInputPassword, encodedMemberPassword)) {
+            throw new BusinessException(ErrorCode.DUPLICATED_PASSWORD);
+        }
     }
 
     private void checkAuthForPayment(long memberId, Payment payment) {

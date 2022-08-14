@@ -44,7 +44,7 @@ public class ClubServiceTest {
 
         //when & then
         try {
-            clubService.registerNewClub(clubRegisterRequest, 0L);
+            clubService.registerNewClub(0L, clubRegisterRequest);
         } catch (BusinessException e) {
             assertEquals(e.getErrorCode(), ErrorCode.DUPLICATED_CLUB_NAME);
             return;

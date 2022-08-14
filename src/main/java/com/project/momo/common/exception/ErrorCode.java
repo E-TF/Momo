@@ -36,7 +36,14 @@ public enum ErrorCode {
     EXCEED_CLUB_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "최대 가입 인원을 초과하였습니다."),
     DUPLICATED_CLUB_JOIN(HttpStatus.CONFLICT, "이미 가입한 모임입니다."),
     EXCEED_CLUB_CREATION_LIMIT_PER_MEMBER(HttpStatus.BAD_REQUEST, "최대 모임 생성 개수를 초과하였습니다."),
-    CONSIST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 모임에 가입되어 있지 않습니다.");
+    CONSIST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 모임에 가입되어 있지 않습니다."),
+
+    //DistributedLock
+    NO_LOCK_NAME_SET(HttpStatus.INTERNAL_SERVER_ERROR, "LOCK NAME 이 설정되지 않았습니다."),
+    CONNECTION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "커넥션을 찾을 수 없습니다."),
+    NO_RESULT_SET(HttpStatus.INTERNAL_SERVER_ERROR, "LOCK 수행 결과값이 없습니다."),
+    LOCK_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "LOCK 수행에 실패했습니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;
