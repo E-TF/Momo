@@ -3,6 +3,7 @@ package com.project.momo.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.momo.common.exception.ErrorDto;
 import com.project.momo.common.exception.auth.InvalidOauthTypeException;
+import com.project.momo.dto.signup.SignupOAuthDetails;
 import com.project.momo.entity.Member;
 import com.project.momo.repository.MemberRepository;
 import com.project.momo.security.consts.OauthType;
@@ -11,6 +12,7 @@ import com.project.momo.security.oauth.GithubOAuthAttributes;
 import com.project.momo.security.oauth.OAuthAttributes;
 import com.project.momo.security.userdetails.UserDetailsImpl;
 import com.project.momo.service.AuthorizationService;
+import com.project.momo.service.SignupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -31,6 +33,7 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     private final AuthorizationService authorizationService;
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
+    private final SignupService signupService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -47,6 +50,15 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
                     switch (oauthType) {
                         case GITHUB:
                             oAuthAttributes = GithubOAuthAttributes.ofAttributes(oauthToken.getPrincipal().getAttributes());
+                            //여기서 로그인을 시켜야겠지??
+                            signupService.signupOAuth(new SignupOAuthDetails(
+                                    "tempName",
+                                    "temp@email.com",
+                                    null,
+                                    "+82-10-1234-5678",
+                                    "12345678",
+                                    OauthType.GITHUB
+                            ));
                             break;
                         case GOOGLE:
                             //추가 예정
@@ -59,12 +71,13 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
                             break;
                     }
 
-                    String tempToken = tokenProvider.createToken(null, TokenType.ACCESS);
-                    response.getWriter().write(objectMapper.writeValueAsString(oAuthAttributes));
-                    response.setHeader(TokenType.ACCESS.getTokenHeader(), tempToken);
-                    response.setStatus(HttpServletResponse.SC_ACCEPTED);
-                    return;
+//                    String tempToken = tokenProvider.createToken(null, TokenType.ACCESS);
+//                    response.getWriter().write(objectMapper.writeValueAsString(oAuthAttributes));
+//                    response.setHeader(TokenType.ACCESS.getTokenHeader(), tempToken);
+//                    response.setStatus(HttpServletResponse.SC_ACCEPTED);
+//                    return;
                 }
+                optionalMember = memberRepository.findByOauthTypeAndOauthId(oauthType, oauthId);
                 memberId = optionalMember.get().getId();
             } catch (InvalidOauthTypeException exception) {
                 sendError(response, HttpServletResponse.SC_UNAUTHORIZED, exception);

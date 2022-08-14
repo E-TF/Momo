@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .cors().disable() //todo 수정해야함
                 .authorizeRequests()
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login/**").permitAll()
@@ -48,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET,"/api/signup/**").permitAll()
                 .mvcMatchers(POST, "/api/signup").permitAll()
                 .mvcMatchers(POST, "/api/signup/oauth").hasRole(Role.TEMPORARY)
-                .mvcMatchers(GET, "/api/loginid/duplicate").permitAll()
                 .mvcMatchers(GET, "/oauth2/**").permitAll()
                 .mvcMatchers(GET, "/api/category/**").permitAll()
                 .mvcMatchers(GET, "/api/region/**").permitAll()
+                .mvcMatchers(GET, "/login/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

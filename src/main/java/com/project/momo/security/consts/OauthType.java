@@ -18,6 +18,6 @@ public enum OauthType {
     }
 
     public static OauthType toOauthType(String value){
-        return Arrays.stream(OauthType.values()).filter(v -> v.equals(value)).findFirst().orElseThrow(() -> new InvalidOauthTypeException(value));
+        return Arrays.stream(OauthType.values()).filter(oauthType -> oauthType.value.equals(value)).findFirst().orElseThrow(() -> new InvalidOauthTypeException(value));
     }
 }
