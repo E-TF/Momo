@@ -19,6 +19,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/my-simple-info")
+    public ResponseEntity<MemberSimpleInfoResponse> inquireMySimpleInfo() {
+        return ResponseEntity.ok().body(memberService.inquireMySimpleInfo(getCurrentMemberId()));
+    }
+
     @GetMapping("/my-info")
     public ResponseEntity<MemberInfoResponse> inquireMyAccountInfo() {
         return ResponseEntity.ok().body(memberService.inquireMyAccountInfo(getCurrentMemberId()));

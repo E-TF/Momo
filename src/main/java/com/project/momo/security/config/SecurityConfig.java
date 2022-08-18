@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().disable() //todo 수정해야함
                 .authorizeRequests()
                 .mvcMatchers(GET, "/favicon/**").permitAll()
                 .mvcMatchers(POST, "/api/login/**").permitAll()
@@ -67,11 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAt(loginAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter, LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter, JwtFilter.class);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override

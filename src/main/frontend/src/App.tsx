@@ -4,14 +4,7 @@ import Header from "./components/Header";
 import {Route, Routes} from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Callback from "./components/Callback";
-import NewWindow from "./components/NewWindow";
-
-interface User {
-    id: number,
-    imageUrl: string,
-    name: string
-}
+import CallBack from "./components/CallBack";
 
 function App() {
 
@@ -21,11 +14,10 @@ function App() {
                 <Route path="/" element={<Header/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element={<Signup/>}/>
-                <Route path='/callback' element={<Callback/>}/>
-                <Route path='/newWindow/:accessToken/:refreshToken' element={<NewWindow/>}/>
+                <Route path='/callBack/:accessToken/:refreshToken' element={<CallBack/>}/>
             </Routes>
         </div>
     );
-}
+};
 
 export default App;
