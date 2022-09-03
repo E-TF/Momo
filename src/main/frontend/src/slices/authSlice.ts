@@ -4,12 +4,12 @@ export interface AuthState {
     accessToken: string | null,
     refreshToken: string | null,
     isLoggedIn: boolean
-};
+}
 
 export interface Tokens {
     accessToken: string,
     refreshToken: string,
-};
+}
 
 const initialState: AuthState = {
     accessToken: null,
@@ -21,6 +21,20 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        updateAuth:(state) =>{
+            const accessToken = localStorage.getItem("accessToken");
+            const refreshToken = localStorage.getItem("refreshToken");
+            if (accessToken !== null && refreshToken !== null) {
+                state.accessToken = accessToken;
+                state.refreshToken = refreshToken;
+                state.isLoggedIn = true;
+            }
+        },
+        updateAccessToken:(state, action: PayloadAction<string>)=>{
+            const accessToken = action.payload;
+            localStorage.setItem("accessToken", accessToken);
+            state.accessToken = accessToken;
+        },
         login: (state, action: PayloadAction<Tokens>) => {
             const accessToken = action.payload.accessToken;
             const refreshToken = action.payload.refreshToken;
@@ -40,5 +54,5 @@ export const authSlice = createSlice({
     }
 });
 
-export const {login, logout} = authSlice.actions;
+export const {login, logout, updateAuth, updateAccessToken} = authSlice.actions;
 export default authSlice.reducer;

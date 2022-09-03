@@ -1,28 +1,26 @@
 import {useNavigate} from "react-router-dom";
 import {Button, Form, Input, message} from "antd";
-import React from "react";
+import React, {useState} from "react";
 import axios, {AxiosResponseHeaders} from "axios";
 import {login, Tokens} from "../slices/authSlice";
 import {useDispatch} from "react-redux";
 import {GithubOutlined, GoogleOutlined} from "@ant-design/icons";
 import {AppDispatch} from "../store";
 
-interface LoginRequest {
+interface LoginData {
     loginId: string,
     password: string
-};
+}
 
 function Login(): JSX.Element {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+    const [loginData, setLoginData] = useState<LoginData>({loginId: "", password: ""});
 
-    const loginRequestData: LoginRequest = {loginId: "", password: ""};
-    const tokens: Tokens = {accessToken: '', refreshToken: ''};
     const popupWindowFeature:string = 'top=30,left=30,width=700,height=600,status=no,menubar=no,toolbar=no,resizable=no';
 
     const saveTokens = (headers: AxiosResponseHeaders) => {
-        tokens.accessToken = headers['authorization'];
-        tokens.refreshToken = headers['refresh-token'];
+        const tokens:Tokens = {accessToken : headers['authorization'], refreshToken : headers['refresh-token']};
         dispatch(login(tokens));
         navigate('/');
     };
@@ -31,16 +29,13 @@ function Login(): JSX.Element {
         window.open('/oauth2/authorization/' + registrationId, registrationId + 'Window', popupWindowFeature);
     };
 
-    const onChangeLoginId = (e: React.ChangeEvent<HTMLInputElement>) => {
-        loginRequestData.loginId = e.currentTarget.value;
-    };
-
-    const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        loginRequestData.password = e.currentTarget.value;
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setLoginData({...loginData, [name]: value});
     };
 
     const onFinish = () => {
-        axios.post('/api/login', loginRequestData)
+        axios.post('/api/login', loginData)
             .then((result) => {
                 saveTokens(result.headers)
             })
@@ -62,12 +57,12 @@ function Login(): JSX.Element {
                 size={"large"}
             >
                 <Form.Item label="Login ID" required>
-                    <Input placeholder="input Login ID" required={true}
-                           onChange={(e) => {onChangeLoginId(e)}}/>
+                    <Input name={"loginId"} placeholder="input Login ID" required={true}
+                           onChange={(e) => {onChange(e)}}/>
                 </Form.Item>
                 <Form.Item label="Password" required>
-                    <Input placeholder="input Password" type="password" required={true}
-                           onChange={(e) => {onChangePassword(e)}}/>
+                    <Input name={"password"} placeholder="input Password" type="password" required={true}
+                           onChange={(e) => {onChange(e)}}/>
                 </Form.Item>
                 <Form.Item style={{marginTop: 40}}>
                     <Button type="primary" htmlType="submit" block>Log In</Button>
@@ -85,6 +80,6 @@ function Login(): JSX.Element {
             </Form>
         </div>
     );
-};
+}
 
 export default Login;

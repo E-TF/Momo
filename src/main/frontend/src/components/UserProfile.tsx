@@ -1,7 +1,7 @@
 import {Avatar, Space} from "antd";
-import {UserProps} from "./UserMenu";
+import {UserInfoProps} from "./UserMenu";
 
-const UserProfile = ({userInfo}: UserProps): JSX.Element => {
+const UserProfile = ({userInfo}: UserInfoProps): JSX.Element => {
     return (
         <Space>
             <Avatar src={userInfo.imageUrl}/>

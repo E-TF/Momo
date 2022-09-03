@@ -95,7 +95,7 @@ public class TokenProvider {
         return true;
     }
 
-    public Long validateRefreshToken(String jwt) throws JwtException {
+    public long validateRefreshToken(String jwt) throws JwtException {
         try {
             validate(jwt);
         } catch (SignatureException | MalformedJwtException e) {

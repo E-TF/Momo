@@ -6,11 +6,7 @@ import {logout} from "../slices/authSlice";
 const UserDropDownMenu = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const Logout = () => {
-        console.log("hi");
-        dispatch(logout());
-        navigate('/');
-    };
+
     return (
         <Menu
             items={[
@@ -25,7 +21,10 @@ const UserDropDownMenu = () => {
                 {
                     key: '2',
                     label: (
-                        <a target="_blank" rel="noopener noreferrer" onClick = {Logout}>
+                        <a target="_blank" rel="noopener noreferrer" onClick={() => {
+                            dispatch(logout());
+                            navigate('/');
+                        }}>
                             Log Out
                         </a>
                     ),

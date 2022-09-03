@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store";
 import {Button, PageHeader} from "antd";
 import {useNavigate} from "react-router-dom";
-import {login, Tokens} from "../slices/authSlice";
+import {AuthState, logout, updateAccessToken, updateAuth} from "../slices/authSlice";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import UserMenu from "./UserMenu";
@@ -11,42 +11,52 @@ export interface UserInfo {
     id: number | null,
     name: string | null,
     imageUrl: string | null
-};
+}
 
 const Header = (): JSX.Element => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    dispatch(updateAuth());
+
     const auth = useSelector((state: RootState) => state.auth);
-
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    if (accessToken !== null && refreshToken !== null) {
-        const tokens: Tokens = {
-            accessToken: accessToken as string,
-            refreshToken: refreshToken as string
-        };
-        dispatch(login(tokens));
-    }
-
-    const [userInfo, setUserInfo] = useState<UserInfo>({id: 0, name: null, imageUrl: null});
+    const [userInfo, setUserInfo] = useState<UserInfo>({id: null, name: null, imageUrl: null});
+    const [authState, setAuthState] = useState<AuthState>(auth);
 
     useEffect(() => {
-        axios.get('/api/members/my-simple-info', {
-            headers: {
-                'Authorization': `Bearer ${auth.accessToken as string}`
-            }
-        })
-            .then(result => {
-                const receivedData = result.data;
-                setUserInfo(receivedData);
+        if (authState.accessToken !== null) { //login 한 경우
+            axios.get('/api/members/my-simple-info', {
+                headers: {
+                    'Authorization': `Bearer ${auth.accessToken as string}`
+                }
             })
-    }, []);
+                .then(result => {
+                    const receivedData: UserInfo = result.data as UserInfo;
+                    setUserInfo(receivedData);
+                })
+                .catch(error => {
+                    let status = error.response.status as number;
+                    if (status === 401) {
+                        axios.get('/api/tokens/refresh', {
+                            headers: {
+                                'refresh-token': `Bearer ${auth.refreshToken as string}`
+                            }
+                        })
+                            .then(result => {
+                                dispatch(updateAccessToken(result.headers['authorization']));
+                                setAuthState({...authState, accessToken: result.headers['authorization']});
+                            })
+                            .catch(() => {
+                                dispatch(logout());
+                                navigate('/login');
+                            })
+                    }
+                })
+        }
+    }, [authState]);
 
     return (
-        <>
-            <PageHeader title="Momo" subTitle="모두의 모임" extra={
-                auth.isLoggedIn ? <UserMenu userInfo={userInfo}/> : <LoginBtn/>}></PageHeader>
-        </>
+        <PageHeader title="Momo" subTitle="모두의 모임" extra={
+            auth.isLoggedIn ? <UserMenu userInfo={userInfo}/> : <LoginBtn/>}/>
     );
 };
 

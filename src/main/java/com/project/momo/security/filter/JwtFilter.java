@@ -1,6 +1,7 @@
 package com.project.momo.security.filter;
 
 import com.project.momo.common.exception.auth.JwtException;
+import com.project.momo.common.exception.auth.JwtNotFoundException;
 import com.project.momo.common.utils.JwtUtils;
 import com.project.momo.security.consts.TokenType;
 import com.project.momo.security.jwt.TokenProvider;
@@ -19,16 +20,16 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-
+    private static final String REFRESH_PROCESS_URL = "/api/tokens/refresh";
     private final TokenProvider tokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws JwtException, ServletException, IOException {
-        if (JwtUtils.hasToken(request, TokenType.REFRESH)) {
+        if (request.getRequestURI().equals(REFRESH_PROCESS_URL)) {
+            checkRequestHeaderContainsToken(request, TokenType.REFRESH);
             String refreshJwt = JwtUtils.resolveToken(request, TokenType.REFRESH);
-            Long memberId = tokenProvider.validateRefreshToken(refreshJwt);
+            long memberId = tokenProvider.validateRefreshToken(refreshJwt);
             String reissueToken = tokenProvider.reissue(memberId);
-
             sendAccessToken(response, reissueToken);
             return;
         }
@@ -43,9 +44,14 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private void checkRequestHeaderContainsToken(HttpServletRequest request, TokenType tokenType) {
+        if (!JwtUtils.hasToken(request, tokenType)) {
+            throw JwtNotFoundException.getInstance();
+        }
+    }
+
     private void sendAccessToken(HttpServletResponse response, String token) {
         response.setHeader(TokenType.ACCESS.getTokenHeader(), token);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
-
 }

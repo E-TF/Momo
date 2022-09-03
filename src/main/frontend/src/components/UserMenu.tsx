@@ -4,15 +4,14 @@ import {DownOutlined} from "@ant-design/icons";
 import UserProfile from "./UserProfile";
 import UserDropDownMenu from "./UserDropDownMenu";
 
-export type UserProps = {
+export type UserInfoProps = {
     userInfo: UserInfo;
 }
 
-const UserMenu = ({userInfo}: UserProps): JSX.Element => {
-
+const UserMenu = ({userInfo}: UserInfoProps): JSX.Element => {
     return (
         <>
-            <Dropdown overlay={UserDropDownMenu}>
+            <Dropdown overlay={<UserDropDownMenu/>}>
                 <a onClick={e => e.preventDefault()}>
                     <Space>
                         <UserProfile userInfo={userInfo}/>

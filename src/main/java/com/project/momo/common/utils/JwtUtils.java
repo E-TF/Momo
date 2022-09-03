@@ -1,5 +1,6 @@
 package com.project.momo.common.utils;
 
+import com.project.momo.common.exception.auth.JwtNotFoundException;
 import com.project.momo.security.consts.TokenType;
 import com.project.momo.common.exception.auth.JwtException;
 import com.project.momo.security.consts.JwtConst;
@@ -19,7 +20,7 @@ public class JwtUtils {
         if (StringUtils.hasText(bearerToken))
             return bearerToken.substring(JwtConst.TOKEN_PREFIX_SUBSTRING_VALUE);
 
-        throw new JwtException("토큰이 입력되지 않았습니다.");
+        throw JwtNotFoundException.getInstance();
     }
 
     public static boolean hasToken(HttpServletRequest request, TokenType tokenType) {

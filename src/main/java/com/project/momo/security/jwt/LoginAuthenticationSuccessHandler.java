@@ -53,6 +53,7 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
                     memberId = optionalMember.get().getId();
 
                 JwtTokens jwtTokens = new JwtTokens(memberId);
+                authorizationService.saveRefreshToken(memberId, jwtTokens.refreshToken);
                 response.sendRedirect(String.format(
                         FRONT_END_CALLBACK_URL_FORMAT,
                         jwtTokens.accessToken,
