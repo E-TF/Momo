@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class OAuthAttributes {
+public abstract class OauthAttributes {
 
     private OauthType oauthType;
 

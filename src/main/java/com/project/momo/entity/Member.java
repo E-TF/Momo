@@ -71,14 +71,14 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public static Member createOauth(OauthType oauthType, String oauthId, String name, String email, String phoneNumber, String imageUrl) {
+    public static Member createOauth(OauthType oauthType, String oauthId, String name, String email, String imageUrl) {
         Member member = new Member();
         member.loginId = oauthType + oauthId;
         member.oauthType = oauthType;
         member.oauthId = oauthId;
         member.name = name;
         member.email = email;
-        member.phoneNumber = phoneNumber;
+        member.phoneNumber = null;
         member.imageUrl = imageUrl;
         member.createdBy = member.ANONYMOUS;
         return member;

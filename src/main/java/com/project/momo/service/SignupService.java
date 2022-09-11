@@ -6,8 +6,9 @@ import com.project.momo.common.lock.DistributedLock;
 import com.project.momo.common.lock.DistributedLockPrefix;
 import com.project.momo.common.lock.LockName;
 import com.project.momo.common.utils.PasswordManager;
-import com.project.momo.dto.signup.SignupOAuthDetails;
+import com.project.momo.dto.signup.SignupOauthDetails;
 import com.project.momo.dto.signup.SignupRequest;
+import com.project.momo.entity.Member;
 import com.project.momo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
@@ -31,8 +32,10 @@ public class SignupService {
 
     @DistributedLock(prefix = DistributedLockPrefix.MEMBER_LOGIN_ID)
     @Transactional
-    public void signupOAuth(@LockName final String loginId, SignupOAuthDetails signupOAuthDetails) {
-        memberRepository.save(signupOAuthDetails.toMember());
+    public long signupOAuth(@LockName final String loginId, SignupOauthDetails signupOAuthDetails) {
+        Member member = signupOAuthDetails.toMember();
+        memberRepository.save(member);
+        return member.getId();
     }
 
     @Transactional(readOnly = true)

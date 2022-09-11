@@ -2,7 +2,6 @@ package com.project.momo.controller;
 
 import com.project.momo.common.annotation.member.LoginId;
 import com.project.momo.common.exception.ErrorCode;
-import com.project.momo.dto.signup.SignupOAuthRequest;
 import com.project.momo.dto.signup.SignupRequest;
 import com.project.momo.service.SignupService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +23,6 @@ public class SignupController {
     @PostMapping
     public void signup(@RequestBody @Valid SignupRequest signupRequest) {
         signupService.signup(signupRequest.getLoginId(), signupRequest);
-    }
-
-    @PostMapping("/oauth")
-    public void signupOAuth(@RequestBody @Valid final SignupOAuthRequest signupOAuthRequest) {
-        String loginId = signupOAuthRequest.getOauthType() + signupOAuthRequest.getOauthId();
-        signupService.signupOAuth(loginId, SignupOAuthRequest.toSignupOAuthDetails(signupOAuthRequest));
     }
 
     @GetMapping("/loginid/duplicate")

@@ -10,14 +10,11 @@ import com.project.momo.security.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
@@ -48,10 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET,"/api/signup/**").permitAll()
                 .mvcMatchers(POST, "/api/signup").permitAll()
                 .mvcMatchers(POST, "/api/signup/oauth").hasRole(Role.TEMPORARY)
-                .mvcMatchers(GET, "/api/loginid/duplicate").permitAll()
                 .mvcMatchers(GET, "/oauth2/**").permitAll()
                 .mvcMatchers(GET, "/api/category/**").permitAll()
                 .mvcMatchers(GET, "/api/region/**").permitAll()
+                .mvcMatchers(GET, "/login/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -66,11 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAt(loginAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter, LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter, JwtFilter.class);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override
